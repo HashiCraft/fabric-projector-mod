@@ -1,0 +1,11 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "block/white_wool",
+    "up": "block/black_wool",
+    "east": "block/green_wool",
+    "west": "block/blue_wool",
+    "north": "block/red_wool",
+    "south": "block/orange_wool"
+  }
+}
