@@ -14,7 +14,6 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.mob.WitchEntity;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -23,6 +22,7 @@ import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.World;
+import net.fabricmc.example.networking.Picture;
 
 public class PictureBlockEntityRenderer<T extends PictureBlockEntity> implements BlockEntityRenderer<T> {
 
@@ -39,6 +39,91 @@ public class PictureBlockEntityRenderer<T extends PictureBlockEntity> implements
   }
 
   public PictureBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
+  }
+
+  @Override
+  public void render(PictureBlockEntity blockEntity, float tickDelta, MatrixStack matrices,
+      VertexConsumerProvider vertexConsumers, int light, int overlay) {
+
+    PictureBlockDimensions dimensions = detectNearbyBlocks(blockEntity);
+
+    if (!dimensions.mainBlock) {
+      return;
+    }
+
+    RenderSystem.enableDepthTest();
+
+    RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+
+    // load the picture
+    Picture picture = blockEntity.getCurrentPicture();
+
+    if (picture == null || picture.identifier == "") {
+      return;
+    }
+
+    RenderSystem.setShaderTexture(0, new Identifier(picture.identifier));
+
+    // RenderSystem.setShaderTexture(0, new
+    // Identifier("textures/block/carved_pumpkin.png"));
+    Tessellator tessellator = Tessellator.getInstance();
+    BufferBuilder bufferBuilder = tessellator.getBuffer();
+
+    matrices.push();
+
+    Direction direction = blockEntity.getCachedState().get(Properties.HORIZONTAL_FACING);
+
+    float xOffset = 0.0F;
+    float zOffset = 0.0F;
+
+    float zTranslate = 0.0F;
+    float xTranslate = 0.0F;
+
+    Quaternion yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(0.0F);
+
+    switch (direction) {
+      case NORTH:
+        zTranslate = -0.001F;
+        zOffset = 1.0F;
+        xOffset = 1.0F;
+        yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0F);
+        break;
+      case SOUTH:
+        zTranslate = 0.001F;
+        break;
+      case EAST:
+        xTranslate = 0.001F;
+        zOffset = 1.0F;
+        yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(90.0F);
+        break;
+      case WEST:
+        yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(-90.0F);
+        xTranslate = -0.001F;
+        xOffset = 1.0F;
+        break;
+    }
+
+    matrices.translate(xTranslate + xOffset, 0.00F, zTranslate + zOffset);
+
+    // set the rotation
+    matrices.multiply(yRotation);
+
+    Matrix4f matrix4f = matrices.peek().getModel();
+    bufferBuilder.begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+
+    bufferBuilder.vertex(matrix4f, dimensions.width, 0.0F, 1.0F).texture(1.0F, 1.0F).color(255, 255, 255, 255).next(); // A
+    bufferBuilder.vertex(matrix4f, dimensions.width, dimensions.height, 1.0F).texture(1.0F, 0.0F)
+        .color(255, 255, 255, 255).next(); // B
+    bufferBuilder.vertex(matrix4f, 0.0F, dimensions.height, 1.0F).texture(0.0F, 0.0F).color(255, 255, 255, 255).next(); // C
+    bufferBuilder.vertex(matrix4f, 0.0F, 0.0F, 1.0F).texture(0.0F, 1.0F).color(255, 255, 255, 255).next(); // D
+
+    tessellator.draw();
+    matrices.pop();
+    RenderSystem.disableDepthTest();
+
+    // Cull stops the image from being visible from the back
+    // disabling Cull means the texture is visible from two sides
+    // RenderSystem.disableCull();
   }
 
   // detectNearbyBlocks determins if this block is part of a collection such as a
@@ -90,8 +175,6 @@ public class PictureBlockEntityRenderer<T extends PictureBlockEntity> implements
       return new PictureBlockDimensions(0, 0, false);
     }
 
-    System.out.println("facing " + facing + " mainblock " + blockEntity.getPos());
-
     // check the east faces for connected block
     checkPos = currentPos.offset(widthBlockDirection);
     foundBlock = world.getBlockEntity(checkPos);
@@ -120,105 +203,5 @@ public class PictureBlockEntityRenderer<T extends PictureBlockEntity> implements
     }
 
     return new PictureBlockDimensions(width, height, true);
-  }
-
-  @Override
-  public void render(PictureBlockEntity blockEntity, float tickDelta, MatrixStack matrices,
-      VertexConsumerProvider vertexConsumers, int light, int overlay) {
-
-    PictureBlockDimensions dimensions = detectNearbyBlocks(blockEntity);
-
-    if (!dimensions.mainBlock) {
-      return;
-    }
-
-    RenderSystem.enableDepthTest();
-
-    RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-
-    // load the picture
-    PictureBlockEntity.Picture picture = blockEntity.getCurrentPicture();
-
-    RenderSystem.setShaderTexture(0, new Identifier(picture.location));
-
-    // RenderSystem.setShaderTexture(0, new
-    // Identifier("textures/block/carved_pumpkin.png"));
-    Tessellator tessellator = Tessellator.getInstance();
-    BufferBuilder bufferBuilder = tessellator.getBuffer();
-
-    matrices.push();
-
-    Direction direction = blockEntity.getCachedState().get(Properties.HORIZONTAL_FACING);
-
-    float xOffset = 0.0F;
-    float zOffset = 0.0F;
-
-    float zTranslate = 0.0F;
-    float xTranslate = 0.0F;
-
-    Quaternion yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(0.0F);
-
-    switch (direction) {
-      case NORTH:
-        zTranslate = -0.001F;
-        zOffset = 1.0F;
-        xOffset = 1.0F;
-        yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0F);
-        break;
-      case SOUTH:
-        zTranslate = 0.001F;
-        break;
-      case EAST:
-        xTranslate = 0.001F;
-        zOffset = 1.0F;
-        yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(90.0F);
-        break;
-      case WEST:
-        yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(-90.0F);
-        xTranslate = -0.001F;
-        xOffset = 1.0F;
-        break;
-    }
-
-    matrices.translate(xTranslate + xOffset, 0.00F, zTranslate + zOffset);
-
-    // rotate to display on a vertical plane
-    // matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90.0F));
-
-    // set the rotation
-    matrices.multiply(yRotation);
-
-    Matrix4f matrix4f = matrices.peek().getModel();
-    bufferBuilder.begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
-
-    // bufferBuilder.vertex(matrix4f, -(dimensions.width / 2) + xOffset, 0.0F +
-    // yOffset, -1.0F).texture(0.0F, 0.0F)
-    // .color(255, 255, 255, 255).next();
-
-    // bufferBuilder.vertex(matrix4f, -(dimensions.width / 2) + xOffset, 0.0F +
-    // yOffset, 1.0F).texture(0.0F, 1.0F)
-    // .color(255, 255, 255, 255).next();
-
-    // bufferBuilder.vertex(matrix4f, (dimensions.width / 2) + xOffset, 0.0F +
-    // yOffset, 1.0F).texture(1.0F, 1.0F)
-    // .color(255, 255, 255, 255).next();
-
-    // bufferBuilder.vertex(matrix4f, (dimensions.width / 2) + xOffset, 0.0F +
-    // yOffset, -1.0F).texture(1.0F, 0.0F)
-    // .color(255, 255, 255, 255).next();
-
-    bufferBuilder.vertex(matrix4f, dimensions.width, 0.0F, 1.0F).texture(1.0F, 1.0F).color(255, 255, 255, 255).next(); // A
-    bufferBuilder.vertex(matrix4f, dimensions.width, dimensions.height, 1.0F).texture(1.0F, 0.0F)
-        .color(255, 255, 255, 255).next(); // B
-    bufferBuilder.vertex(matrix4f, 0.0F, dimensions.height, 1.0F).texture(0.0F, 0.0F).color(255, 255, 255, 255).next(); // C
-    bufferBuilder.vertex(matrix4f, 0.0F, 0.0F, 1.0F).texture(0.0F, 1.0F).color(255, 255, 255, 255).next(); // D
-
-    tessellator.draw();
-    matrices.pop();
-    RenderSystem.disableDepthTest();
-
-    // Cull stops the image from being visible from the back
-    // disabling Cull means the texture is visible from two sides
-    // RenderSystem.disableCull();
   }
 }
