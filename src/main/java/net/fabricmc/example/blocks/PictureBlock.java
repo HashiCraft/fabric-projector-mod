@@ -4,7 +4,6 @@ import net.fabricmc.example.ui.PictureBlockScreen;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.example.ui.PictureBlockGui;
-import net.fabricmc.example.events.PictureDownloadedCallback;
 import net.fabricmc.example.events.PictureScreenSaveCallback;
 import net.fabricmc.example.networking.Channels;
 import net.fabricmc.example.networking.PictureData;
@@ -80,15 +79,6 @@ public class PictureBlock extends BlockWithEntity {
 
     eventsRegistered = true;
 
-    PictureDownloadedCallback.EVENT.register((url, identifier) -> {
-      System.out.println("Download callback " + identifier.toString());
-
-      // update the state
-      // blockEntity.setIdentifier(url, identifier);
-
-      return ActionResult.PASS;
-    });
-
     PictureScreenSaveCallback.EVENT.register((urls, blockEntity) -> {
       System.out.println("URLs saved");
 
@@ -98,7 +88,7 @@ public class PictureBlock extends BlockWithEntity {
       // add the new URLs
       for (String url : urls) {
         if (!url.isEmpty()) {
-          blockEntity.addPicture(0, 0, url);
+          blockEntity.addPicture(url);
         }
       }
 

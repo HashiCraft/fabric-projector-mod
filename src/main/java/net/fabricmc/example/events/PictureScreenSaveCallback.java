@@ -1,10 +1,11 @@
 package net.fabricmc.example.events;
 
+import java.util.ArrayList;
+
 import net.fabricmc.example.blocks.PictureBlockEntity;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
 
 public interface PictureScreenSaveCallback {
   Event<PictureScreenSaveCallback> EVENT = EventFactory.createArrayBacked(PictureScreenSaveCallback.class,
@@ -20,5 +21,5 @@ public interface PictureScreenSaveCallback {
         return ActionResult.PASS;
       });
 
-  ActionResult interact(String[] urls, PictureBlockEntity pictureBlockEntity);
+  ActionResult interact(ArrayList<String> urls, PictureBlockEntity pictureBlockEntity);
 }

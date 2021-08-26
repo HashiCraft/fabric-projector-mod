@@ -4,13 +4,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import net.minecraft.util.math.BlockPos;
 
 public class PictureData implements java.io.Serializable {
-  public ArrayList<Picture> pictures = new ArrayList<Picture>();
+  public ArrayList<String> urls = new ArrayList<String>();
   public int x;
   public int y;
   public int z;
@@ -18,8 +18,8 @@ public class PictureData implements java.io.Serializable {
   public PictureData() {
   }
 
-  public PictureData(ArrayList<Picture> pictures, BlockPos pos) {
-    this.pictures = pictures;
+  public PictureData(ArrayList<String> urls, BlockPos pos) {
+    this.urls = urls;
     this.x = pos.getX();
     this.y = pos.getY();
     this.z = pos.getZ();

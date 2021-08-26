@@ -2,8 +2,8 @@ package net.fabricmc.example.blocks;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import org.lwjgl.system.CallbackI.Z;
-
+import net.fabricmc.example.downloader.FileDownloader;
+import net.fabricmc.example.downloader.FileDownloader.PictureData;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.GameRenderer;
@@ -15,14 +15,12 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.World;
-import net.fabricmc.example.networking.Picture;
 
 public class PictureBlockEntityRenderer<T extends PictureBlockEntity> implements BlockEntityRenderer<T> {
 
@@ -56,13 +54,20 @@ public class PictureBlockEntityRenderer<T extends PictureBlockEntity> implements
     RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
 
     // load the picture
-    Picture picture = blockEntity.getCurrentPicture();
+    String url = blockEntity.getCurrentPicture();
 
-    if (picture == null || picture.identifier == "") {
+    // no picture ignore
+    if (url == null || url.isEmpty()) {
       return;
     }
 
-    RenderSystem.setShaderTexture(0, new Identifier(picture.identifier));
+    // get the identity
+    PictureData data = FileDownloader.getInstance().getPictureDataForURL(url, true);
+    if (data == null || data.identifier == null) {
+      return;
+    }
+
+    RenderSystem.setShaderTexture(0, data.identifier);
 
     // RenderSystem.setShaderTexture(0, new
     // Identifier("textures/block/carved_pumpkin.png"));

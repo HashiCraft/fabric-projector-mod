@@ -1,12 +1,10 @@
 package net.fabricmc.example.blocks;
 
 import net.fabricmc.example.ExampleMod;
-import net.fabricmc.example.networking.Picture;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 import java.io.ByteArrayInputStream;
@@ -18,7 +16,7 @@ import java.util.ArrayList;
 
 public class PictureBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
 
-  private ArrayList<Picture> pictures = new ArrayList<Picture>();
+  private ArrayList<String> pictures = new ArrayList<String>();
 
   public PictureBlockEntity(BlockPos pos, BlockState state) {
     super(ExampleMod.EXAMPLE_BLOCK_ENTITY, pos, state);
@@ -65,13 +63,13 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
     return tag;
   }
 
-  private ArrayList<Picture> deserializePictures(byte[] data) {
+  private ArrayList<String> deserializePictures(byte[] data) {
     try {
       ByteArrayInputStream bis = new ByteArrayInputStream(data);
       ObjectInputStream ois;
       ois = new ObjectInputStream(bis);
 
-      return (ArrayList<Picture>) ois.readObject();
+      return (ArrayList<String>) ois.readObject();
 
     } catch (IOException e) {
       e.printStackTrace();
@@ -92,7 +90,6 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
 
       return bos.toByteArray();
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
 
@@ -100,24 +97,15 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
   }
 
   public void clearPictures() {
-    pictures = new ArrayList<Picture>();
+    pictures = new ArrayList<String>();
   }
 
-  public void addPicture(int width, int height, String location) {
+  public void addPicture(String location) {
     if (pictures == null) {
-      pictures = new ArrayList<Picture>();
+      pictures = new ArrayList<String>();
     }
 
-    pictures.add(new Picture(width, height, location));
-  }
-
-  public void setIdentifierForPicture(String url, Identifier identifier) {
-    for (Picture picture : pictures) {
-      if (picture.location.equals(url)) {
-        picture.identifier = identifier.toString();
-        return;
-      }
-    }
+    pictures.add(location);
   }
 
   public void nextPicture() {
@@ -146,7 +134,7 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
     this.getWorld().setBlockState(this.pos, this.getCachedState());
   }
 
-  public Picture getCurrentPicture() {
+  public String getCurrentPicture() {
     if (this.pictures == null || this.pictures.size() == 0) {
       return null;
     }
@@ -155,25 +143,7 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
     return pictures.get(currentPicture);
   }
 
-  public ArrayList<Picture> getPictures() {
-    if (this.pictures == null || this.pictures.size() == 0) {
-      return new ArrayList<Picture>();
-    }
-
-    return this.pictures;
-  }
-
-  public String[] getPictureURLs() {
-    if (pictures == null) {
-      return new String[0];
-    }
-
-    ArrayList<String> urls = new ArrayList<String>();
-
-    for (Picture picture : pictures) {
-      urls.add(picture.location);
-    }
-
-    return urls.toArray(new String[urls.size()]);
+  public ArrayList<String> getPictures() {
+    return pictures;
   }
 }

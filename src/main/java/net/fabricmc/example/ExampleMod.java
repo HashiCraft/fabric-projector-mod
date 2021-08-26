@@ -4,7 +4,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.example.blocks.PictureBlock;
 import net.fabricmc.example.blocks.PictureBlockEntity;
 import net.fabricmc.example.networking.Channels;
-import net.fabricmc.example.networking.Picture;
 import net.fabricmc.example.networking.PictureData;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -61,8 +60,8 @@ public class ExampleMod implements ModInitializer {
 
             be.clearPictures();
 
-            for (Picture pics : pictureData.pictures) {
-              be.addPicture(0, 0, pics.location);
+            for (String pics : pictureData.urls) {
+              be.addPicture(pics);
             }
 
             be.markDirty();
