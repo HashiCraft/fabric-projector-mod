@@ -1,18 +1,22 @@
-package net.fabricmc.example.blocks;
+package com.github.hashicraft.projector.blocks;
 
+import com.github.hashicraft.projector.downloader.FileDownloader;
+import com.github.hashicraft.projector.downloader.FileDownloader.PictureData;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.fabricmc.example.downloader.FileDownloader;
-import net.fabricmc.example.downloader.FileDownloader.PictureData;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.VertexFormat.DrawMode;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
@@ -49,10 +53,6 @@ public class PictureBlockEntityRenderer<T extends PictureBlockEntity> implements
       return;
     }
 
-    RenderSystem.enableDepthTest();
-
-    RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-
     // load the picture
     String url = blockEntity.getCurrentPicture();
 
@@ -67,10 +67,15 @@ public class PictureBlockEntityRenderer<T extends PictureBlockEntity> implements
       return;
     }
 
-    RenderSystem.setShaderTexture(0, data.identifier);
+    RenderSystem.enableDepthTest();
 
-    // RenderSystem.setShaderTexture(0, new
-    // Identifier("textures/block/carved_pumpkin.png"));
+    RenderSystem.setShader(GameRenderer::getPositionTexShader);
+    // RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+    RenderSystem.setShaderTexture(0, data.identifier);
+    RenderSystem.enableBlend();
+    RenderSystem.defaultBlendFunc();
+    RenderSystem.depthMask(false);
+
     Tessellator tessellator = Tessellator.getInstance();
     BufferBuilder bufferBuilder = tessellator.getBuffer();
 
@@ -125,6 +130,8 @@ public class PictureBlockEntityRenderer<T extends PictureBlockEntity> implements
     tessellator.draw();
     matrices.pop();
     RenderSystem.disableDepthTest();
+    RenderSystem.depthMask(true);
+    RenderSystem.disableBlend();
 
     // Cull stops the image from being visible from the back
     // disabling Cull means the texture is visible from two sides

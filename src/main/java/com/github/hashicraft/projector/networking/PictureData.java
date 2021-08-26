@@ -1,4 +1,4 @@
-package net.fabricmc.example.networking;
+package com.github.hashicraft.projector.networking;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class PictureData implements java.io.Serializable {
   public ArrayList<String> urls = new ArrayList<String>();
+  public int currentImage = 0;
   public int x;
   public int y;
   public int z;
@@ -18,8 +19,9 @@ public class PictureData implements java.io.Serializable {
   public PictureData() {
   }
 
-  public PictureData(ArrayList<String> urls, BlockPos pos) {
+  public PictureData(ArrayList<String> urls, int currentImage, BlockPos pos) {
     this.urls = urls;
+    this.currentImage = currentImage;
     this.x = pos.getX();
     this.y = pos.getY();
     this.z = pos.getZ();

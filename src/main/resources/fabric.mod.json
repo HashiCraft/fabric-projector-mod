@@ -3,41 +3,36 @@
   "id": "projector",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Projector",
+  "description": "Projector mod allows you to load images from the internet and set them to blocks",
   "authors": [
-    "Me!"
+    "Nic Jackson",
+    "Erik (PEBKAC) Veld"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://hashicraft.com/",
+    "sources": "https://github.com/hashicraft/fabric-projector-mod"
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/projector/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "com.github.hashicraft.projector.ProjectorMod"
     ],
     "client":[
-      {
-        "value": "net.fabricmc.example.ExampleModClient"
-      }
+      "com.github.hashicraft.projector.ProjectorModClient"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "projector.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.11.3",
     "fabric": "*",
     "minecraft": "1.17.x",
     "java": ">=16"
-  },
-  "suggests": {
-    "another-mod": "*"
   }
 }

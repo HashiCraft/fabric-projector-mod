@@ -1,4 +1,4 @@
-package net.fabricmc.example.ui;
+package com.github.hashicraft.projector.ui;
 
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
@@ -6,10 +6,10 @@ import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WTextField;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
-import net.fabricmc.example.blocks.PictureBlockEntity;
-import net.fabricmc.example.events.PictureScreenSaveCallback;
 import net.minecraft.text.LiteralText;
 import java.util.ArrayList;
+
+import com.github.hashicraft.projector.blocks.PictureBlockEntity;
 
 public class PictureBlockGui extends LightweightGuiDescription {
   private ArrayList<WTextField> urlFields = new ArrayList<WTextField>();
@@ -52,9 +52,18 @@ public class PictureBlockGui extends LightweightGuiDescription {
 
     WButton button = new WButton(new LiteralText("Save"));
     button.setOnClick(() -> {
-      // This code runs on the client when you click the button.
-      // Broadcast the download event
-      PictureScreenSaveCallback.EVENT.invoker().interact(getURLs(), currentEntity);
+      System.out.println("URLs saved");
+      currentEntity.clearPictures();
+
+      for (WTextField url : urlFields) {
+        String text = url.getText();
+        if (!text.isEmpty()) {
+          currentEntity.addPicture(text);
+        }
+      }
+
+      // call update state to sync with the server
+      currentEntity.updateState();
     });
 
     root.add(button, 0, 7, 16, 1);

@@ -1,8 +1,0 @@
-{
-  "variants": {
-    "facing=north": { "model": "projector:block/example_block", "uvlock": false },
-    "facing=east":  { "model": "projector:block/example_block", "y":  90, "uvlock": false },
-    "facing=south": { "model": "projector:block/example_block", "y": 180, "uvlock": false },
-    "facing=west":  { "model": "projector:block/example_block", "y": 270, "uvlock": false }
-  }
-}

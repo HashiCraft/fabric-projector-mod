@@ -1,14 +1,14 @@
-package net.fabricmc.example;
+package com.github.hashicraft.projector;
+
+import com.github.hashicraft.projector.blocks.PictureBlock;
+import com.github.hashicraft.projector.blocks.PictureBlockEntity;
+import com.github.hashicraft.projector.networking.Channels;
+import com.github.hashicraft.projector.networking.PictureData;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.example.blocks.PictureBlock;
-import net.fabricmc.example.blocks.PictureBlockEntity;
-import net.fabricmc.example.networking.Channels;
-import net.fabricmc.example.networking.PictureData;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.PlayChannelHandler;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.Block;
@@ -24,24 +24,24 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
-import net.minecraft.block.entity.BlockEntity;
+public class ProjectorMod implements ModInitializer {
 
-public class ExampleMod implements ModInitializer {
-
-  public static final Block EXAMPLE_BLOCK = new PictureBlock(FabricBlockSettings.of(Material.METAL).strength(4.0f));
-  public static BlockEntityType<PictureBlockEntity> EXAMPLE_BLOCK_ENTITY;
+  public static final Block PICTURE_BLOCK = new PictureBlock(FabricBlockSettings.of(Material.METAL).strength(4.0f));
+  public static BlockEntityType<PictureBlockEntity> PICTURE_BLOCK_ENTITY;
 
   @Override
   public void onInitialize() {
+
+    System.out.println("Hello Fabric world!");
     // This code runs as soon as Minecraft is in a mod-load-ready state.
     // However, some things (like resources) may still be uninitialized.
     // Proceed with mild caution.
 
-    Registry.register(Registry.BLOCK, new Identifier("projector", "example_block"), EXAMPLE_BLOCK);
-    Registry.register(Registry.ITEM, new Identifier("projector", "example_block"),
-        new BlockItem(EXAMPLE_BLOCK, new FabricItemSettings().group(ItemGroup.MISC)));
-    EXAMPLE_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, "projector:demo_block_entity",
-        FabricBlockEntityTypeBuilder.create(PictureBlockEntity::new, EXAMPLE_BLOCK).build(null));
+    Registry.register(Registry.BLOCK, new Identifier("projector", "picture_block"), PICTURE_BLOCK);
+    Registry.register(Registry.ITEM, new Identifier("projector", "picture_block"),
+        new BlockItem(PICTURE_BLOCK, new FabricItemSettings().group(ItemGroup.MISC)));
+    PICTURE_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, "projector:picture_block_entity",
+        FabricBlockEntityTypeBuilder.create(PictureBlockEntity::new, PICTURE_BLOCK).build(null));
 
     // register for sever events
     ServerPlayNetworking.registerGlobalReceiver(Channels.UPDATE_PICTURES,
@@ -64,6 +64,8 @@ public class ExampleMod implements ModInitializer {
               be.addPicture(pics);
             }
 
+            be.setCurrentPicture(pictureData.currentImage);
+
             be.markDirty();
             be.sync();
           });
@@ -71,6 +73,5 @@ public class ExampleMod implements ModInitializer {
           // update the picture entity
         });
 
-    System.out.println("Hello Fabric world!");
   }
 }

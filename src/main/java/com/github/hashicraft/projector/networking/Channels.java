@@ -1,4 +1,4 @@
-package net.fabricmc.example.networking;
+package com.github.hashicraft.projector.networking;
 
 import net.minecraft.util.Identifier;
 

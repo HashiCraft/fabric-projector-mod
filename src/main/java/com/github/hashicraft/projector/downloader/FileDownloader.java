@@ -1,4 +1,4 @@
-package net.fabricmc.example.downloader;
+package com.github.hashicraft.projector.downloader;
 
 import static java.util.concurrent.Executors.newFixedThreadPool;
 

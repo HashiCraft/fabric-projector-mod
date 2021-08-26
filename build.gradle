@@ -30,7 +30,9 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-  modImplementation "io.github.cottonmc:LibGui:${project.libgui_version}"
+
+  // the `include` method tells Loom to bundle the reference mod
+  modImplementation include("io.github.cottonmc:LibGui:${project.libgui_version}")
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.

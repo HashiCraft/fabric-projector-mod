@@ -1,11 +1,4 @@
-package net.fabricmc.example.blocks;
-
-import net.fabricmc.example.ExampleMod;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
+package com.github.hashicraft.projector.blocks;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,12 +7,26 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import com.github.hashicraft.projector.ProjectorMod;
+import com.github.hashicraft.projector.networking.Channels;
+import com.github.hashicraft.projector.networking.PictureData;
+
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.BlockPos;
+
 public class PictureBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
 
   private ArrayList<String> pictures = new ArrayList<String>();
+  private int currentPicture = 0;
 
   public PictureBlockEntity(BlockPos pos, BlockState state) {
-    super(ExampleMod.EXAMPLE_BLOCK_ENTITY, pos, state);
+    super(ProjectorMod.PICTURE_BLOCK_ENTITY, pos, state);
   }
 
   // Serialize the BlockEntity
@@ -28,6 +35,7 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
     super.writeNbt(tag);
 
     tag.putByteArray("pictures", serializePictures());
+    tag.putInt("current", currentPicture);
 
     System.out.println("Serialized server data");
     return tag;
@@ -39,6 +47,7 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
     super.readNbt(tag);
 
     pictures = deserializePictures(tag.getByteArray("pictures"));
+    currentPicture = tag.getInt("current");
 
     System.out.println("Deserialized server data");
   }
@@ -48,6 +57,7 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
     super.readNbt(tag);
 
     pictures = deserializePictures(tag.getByteArray("pictures"));
+    currentPicture = tag.getInt("current");
 
     System.out.println("Deserialized client data");
   }
@@ -57,6 +67,7 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
     super.writeNbt(tag);
 
     tag.putByteArray("pictures", serializePictures());
+    tag.putInt("current", currentPicture);
 
     System.out.println("Serialized client data");
 
@@ -109,29 +120,23 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
   }
 
   public void nextPicture() {
-    BlockState state = this.getCachedState();
-    int currentPicture = state.get(PictureBlock.SLIDE).intValue();
     currentPicture++;
 
     if (currentPicture >= pictures.size()) {
       currentPicture = 0;
     }
 
-    this.setCachedState(state.with(PictureBlock.SLIDE, currentPicture));
-    this.getWorld().setBlockState(this.pos, this.getCachedState());
+    this.updateState();
   }
 
   public void previousPicture() {
-    BlockState state = this.getCachedState();
-    int currentPicture = state.get(PictureBlock.SLIDE).intValue();
     currentPicture--;
 
     if (currentPicture < 0) {
       currentPicture = pictures.size() - 1;
     }
 
-    this.setCachedState(state.with(PictureBlock.SLIDE, currentPicture));
-    this.getWorld().setBlockState(this.pos, this.getCachedState());
+    this.updateState();
   }
 
   public String getCurrentPicture() {
@@ -139,11 +144,24 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
       return null;
     }
 
-    int currentPicture = this.getCachedState().get(PictureBlock.SLIDE).intValue();
     return pictures.get(currentPicture);
   }
 
   public ArrayList<String> getPictures() {
     return pictures;
+  }
+
+  public void setCurrentPicture(int currentPicture) {
+    this.currentPicture = currentPicture;
+  }
+
+  // updateState tells the server that the local client state has changed
+  public void updateState() {
+    // send the data to the sever so that it can be written to other players
+    PictureData data = new PictureData(this.getPictures(), this.currentPicture, this.getPos());
+    PacketByteBuf buf = PacketByteBufs.create();
+    buf.writeByteArray(data.toBytes());
+
+    ClientPlayNetworking.send(Channels.UPDATE_PICTURES, buf);
   }
 }
