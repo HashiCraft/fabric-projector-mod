@@ -44,9 +44,9 @@ Currently Projector does not work with the current release of [Iris Shaders for 
 This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
 
 ## TODO
-[] Ensure aspect ratio is correctly maintained for images when added to blocks
-[] Improve caching for downloaded images
-[] Add ability to fine tune the image display
-[] Carousel mode, allowing the automatic switching of images
-[] Beamer mode, allowing a picture to be projected onto a surface
-[] Publish to CurseForge and other places
+[] Ensure aspect ratio is correctly maintained for images when added to blocks  
+[] Improve caching for downloaded images  
+[] Add ability to fine tune the image display  
+[] Carousel mode, allowing the automatic switching of images  
+[] Beamer mode, allowing a picture to be projected onto a surface  
+[] Publish to CurseForge and other places  
