@@ -1,5 +1,6 @@
 package com.github.hashicraft.projector.blocks;
 
+import com.github.hashicraft.projector.events.PictureBlockClicked;
 import com.github.hashicraft.projector.ui.PictureBlockGui;
 import com.github.hashicraft.projector.ui.PictureBlockScreen;
 
@@ -39,12 +40,8 @@ public class PictureBlock extends BlockWithEntity {
       if (player.isInSneakingPose()) {
         System.out.println("clicked");
 
-        PictureBlockGui gui = new PictureBlockGui();
-        PictureBlockScreen screen = new PictureBlockScreen(gui);
-        MinecraftClient.getInstance().setScreen(screen);
-
-        // set the default state
-        gui.setURLs(blockEntity);
+        // call the event that is handled in the client mod
+        PictureBlockClicked.EVENT.invoker().interact(blockEntity);
         return ActionResult.SUCCESS;
       }
 
