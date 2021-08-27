@@ -49,6 +49,11 @@ public class PictureBlockEntityRenderer<T extends PictureBlockEntity> implements
       return;
     }
 
+    // only enable if the block is powered
+    if (!dimensions.isStronglyPowered && !dimensions.isWeaklyPowered) {
+      return;
+    }
+
     RenderSystem.enableDepthTest();
 
     RenderSystem.setShader(GameRenderer::getPositionTexShader);

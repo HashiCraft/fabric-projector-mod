@@ -33,11 +33,17 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
     public float width = 0.0F;
     public float height = 0.0F;
     public boolean mainBlock = false;
+    public boolean isStronglyPowered = false;
+    public boolean isWeaklyPowered = false;
 
-    public PictureBlockDimensions(float width, float height, boolean mainBlock) {
+    public PictureBlockDimensions(float width, float height, boolean mainBlock, boolean isStronglyPowered,
+        boolean isWeaklyPowered) {
+
       this.width = width;
       this.height = height;
       this.mainBlock = mainBlock;
+      this.isStronglyPowered = isStronglyPowered;
+      this.isWeaklyPowered = isWeaklyPowered;
     }
   }
 
@@ -194,6 +200,8 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
     World world = this.getWorld();
 
     Boolean isMainBlock = true;
+    Boolean isStronglyPowered = false;
+    Boolean isWeaklyPowered = false;
     float width = 1.0F;
     float height = 1.0F;
     Direction startBlockDirection = Direction.WEST;
@@ -215,7 +223,16 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
         break;
     }
 
-    // first check if I am the start block, there should be nothing to the right
+    // Check if the block is redstone powered
+    int power = world.getReceivedRedstonePower(pos);
+    if (power > 6) {
+      isStronglyPowered = true;
+      isWeaklyPowered = false;
+    } else if (power > 0) {
+      isWeaklyPowered = true;
+    }
+
+    // Check if I am the start block, there should be nothing to the right
     BlockPos currentPos = this.getPos();
     BlockPos checkPos = currentPos.offset(startBlockDirection);
     BlockEntity foundBlock = world.getBlockEntity(checkPos);
@@ -234,20 +251,29 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
     }
 
     if (!isMainBlock) {
-      return new PictureBlockDimensions(0, 0, false);
+      return new PictureBlockDimensions(0, 0, false, false, false);
     }
 
     // check the east faces for connected block
     checkPos = currentPos.offset(widthBlockDirection);
     foundBlock = world.getBlockEntity(checkPos);
+    power = world.getReceivedRedstonePower(checkPos);
 
     while (foundBlock != null && foundBlock.getType() == this.getType()) {
       width++;
+
+      if (power > 6) {
+        isStronglyPowered = true;
+        isWeaklyPowered = false;
+      } else if (power > 0 && !isStronglyPowered) {
+        isWeaklyPowered = true;
+      }
 
       // check the next block
       currentPos = foundBlock.getPos();
       checkPos = currentPos.offset(widthBlockDirection);
       foundBlock = world.getBlockEntity(checkPos);
+      power = world.getReceivedRedstonePower(checkPos);
     }
 
     // check the top faces for connected blocks
@@ -264,6 +290,6 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
       foundBlock = world.getBlockEntity(checkPos);
     }
 
-    return new PictureBlockDimensions(width, height, true);
+    return new PictureBlockDimensions(width, height, true, isStronglyPowered, isWeaklyPowered);
   }
 }
