@@ -38,7 +38,11 @@ public class PictureBlock extends BlockWithEntity {
 
     if (world.isClient()) {
       if (player.isInSneakingPose()) {
-        System.out.println("clicked");
+
+        // onlyt show the menu for the main picture block
+        if (!blockEntity.detectNearbyBlocks().mainBlock) {
+          return ActionResult.SUCCESS;
+        }
 
         // call the event that is handled in the client mod
         PictureBlockClicked.EVENT.invoker().interact(blockEntity);
