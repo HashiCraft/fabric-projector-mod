@@ -4,6 +4,7 @@ import com.github.hashicraft.projector.blocks.PictureBlock;
 import com.github.hashicraft.projector.blocks.PictureBlockEntity;
 import com.github.hashicraft.projector.networking.Channels;
 import com.github.hashicraft.projector.networking.PictureData;
+import com.github.hashicraft.projector.wasm.WasmRuntime;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -31,6 +32,9 @@ public class ProjectorMod implements ModInitializer {
 
   @Override
   public void onInitialize() {
+
+    System.out.println("Starting Wasm Runtime");
+    WasmRuntime.getInstance().init();
 
     System.out.println("Hello Fabric world!");
     // This code runs as soon as Minecraft is in a mod-load-ready state.
@@ -72,6 +76,5 @@ public class ProjectorMod implements ModInitializer {
 
           // update the picture entity
         });
-
   }
 }

@@ -34,6 +34,8 @@ dependencies {
   // the `include` method tells Loom to bundle the reference mod
   modImplementation include("io.github.cottonmc:LibGui:${project.libgui_version}")
 
+  implementation "io.github.kawamuray.wasmtime:wasmtime-java:0.6.0"
+
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
 }
