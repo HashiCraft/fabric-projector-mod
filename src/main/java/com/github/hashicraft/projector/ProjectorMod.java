@@ -32,6 +32,8 @@ public class ProjectorMod implements ModInitializer {
   @Override
   public void onInitialize() {
 
+    System.out.println("Starting Wasm Runtime");
+
     System.out.println("Hello Fabric world!");
     // This code runs as soon as Minecraft is in a mod-load-ready state.
     // However, some things (like resources) may still be uninitialized.
@@ -58,7 +60,7 @@ public class ProjectorMod implements ModInitializer {
 
             PictureBlockEntity be = (PictureBlockEntity) server.getOverworld().getBlockEntity(pos);
 
-            if(be == null) {
+            if (be == null) {
               return;
             }
 
@@ -76,6 +78,5 @@ public class ProjectorMod implements ModInitializer {
 
           // update the picture entity
         });
-
   }
 }

@@ -55,10 +55,10 @@ public class PictureBlockEntityRenderer<T extends PictureBlockEntity> implements
     }
 
     RenderSystem.enableDepthTest();
-
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    // RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+    RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
     RenderSystem.setShaderTexture(0, data.identifier);
+
+    RenderSystem.enableDepthTest();
     RenderSystem.enableBlend();
     RenderSystem.defaultBlendFunc();
     RenderSystem.depthMask(false);
