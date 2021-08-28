@@ -58,6 +58,10 @@ public class ProjectorMod implements ModInitializer {
 
             PictureBlockEntity be = (PictureBlockEntity) server.getOverworld().getBlockEntity(pos);
 
+            if(be == null) {
+              return;
+            }
+
             be.clearPictures();
 
             for (String pics : pictureData.urls) {
