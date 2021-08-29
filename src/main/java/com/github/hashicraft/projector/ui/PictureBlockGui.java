@@ -61,9 +61,6 @@ public class PictureBlockGui extends LightweightGuiDescription {
           currentEntity.addPicture(text);
         }
       }
-
-      // call update state to sync with the server
-      currentEntity.updateState();
     });
 
     root.add(button, 0, 7, 16, 1);
