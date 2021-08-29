@@ -20,9 +20,11 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 
 public class ProjectorMod implements ModInitializer {
 
@@ -50,33 +52,36 @@ public class ProjectorMod implements ModInitializer {
         (MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf,
             PacketSender responseSender) -> {
 
-          System.out.println("got message from server");
           PictureData pictureData = PictureData.fromBytes(buf.readByteArray());
 
           server.execute(() -> {
-            System.out.println("Pos" + pictureData.x + " " + pictureData.y + " " + pictureData.z);
-
             BlockPos pos = new BlockPos(pictureData.x, pictureData.y, pictureData.z);
 
-            PictureBlockEntity be = (PictureBlockEntity) server.getOverworld().getBlockEntity(pos);
+            Iterable<ServerWorld> worlds = server.getWorlds();
+            for (ServerWorld world : worlds) {
+              Identifier id = new Identifier(pictureData.world);
+              RegistryKey key = world.getRegistryKey();
 
-            if (be == null) {
-              return;
+              if (key.getValue().equals(id)) {
+                PictureBlockEntity be = (PictureBlockEntity) world.getBlockEntity(pos);
+
+                if (be == null) {
+                  return;
+                }
+
+                be.clearPictures();
+
+                for (String pics : pictureData.urls) {
+                  be.addPicture(pics);
+                }
+
+                be.setCurrentPicture(pictureData.currentImage);
+
+                be.markDirty();
+                be.sync();
+              }
             }
-
-            be.clearPictures();
-
-            for (String pics : pictureData.urls) {
-              be.addPicture(pics);
-            }
-
-            be.setCurrentPicture(pictureData.currentImage);
-
-            be.markDirty();
-            be.sync();
           });
-
-          // update the picture entity
         });
   }
 }

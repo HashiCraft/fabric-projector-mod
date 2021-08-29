@@ -7,7 +7,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.RegistryKey;
 
 public class PictureData implements java.io.Serializable {
   public ArrayList<String> urls = new ArrayList<String>();
@@ -15,16 +17,18 @@ public class PictureData implements java.io.Serializable {
   public int x;
   public int y;
   public int z;
+  public String world;
 
   public PictureData() {
   }
 
-  public PictureData(ArrayList<String> urls, int currentImage, BlockPos pos) {
+  public PictureData(ArrayList<String> urls, int currentImage, BlockPos pos, RegistryKey world) {
     this.urls = urls;
     this.currentImage = currentImage;
     this.x = pos.getX();
     this.y = pos.getY();
     this.z = pos.getZ();
+    this.world = world.getValue().toString();
   }
 
   public byte[] toBytes() {

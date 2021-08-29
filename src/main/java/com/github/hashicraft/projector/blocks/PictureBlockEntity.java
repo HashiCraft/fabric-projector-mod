@@ -59,7 +59,6 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
     tag.putByteArray("pictures", serializePictures());
     tag.putInt("current", currentPicture);
 
-    System.out.println("Serialized server data");
     return tag;
   }
 
@@ -70,8 +69,6 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
 
     pictures = deserializePictures(tag.getByteArray("pictures"));
     currentPicture = tag.getInt("current");
-
-    System.out.println("Deserialized server data");
   }
 
   @Override
@@ -86,7 +83,6 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
       FileDownloader.getInstance().download(url);
     }
 
-    System.out.println("Deserialized client data");
   }
 
   @Override
@@ -95,8 +91,6 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
 
     tag.putByteArray("pictures", serializePictures());
     tag.putInt("current", currentPicture);
-
-    System.out.println("Serialized client data");
 
     return tag;
   }
@@ -185,7 +179,8 @@ public class PictureBlockEntity extends BlockEntity implements BlockEntityClient
   // updateState tells the server that the local client state has changed
   public void updateState() {
     // send the data to the sever so that it can be written to other players
-    PictureData data = new PictureData(this.getPictures(), this.currentPicture, this.getPos());
+    PictureData data = new PictureData(this.getPictures(), this.currentPicture, this.getPos(),
+        this.world.getRegistryKey());
     PacketByteBuf buf = PacketByteBufs.create();
     buf.writeByteArray(data.toBytes());
 
