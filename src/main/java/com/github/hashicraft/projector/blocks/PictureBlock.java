@@ -1,15 +1,12 @@
 package com.github.hashicraft.projector.blocks;
 
 import com.github.hashicraft.projector.events.PictureBlockClicked;
-import com.github.hashicraft.projector.ui.PictureBlockGui;
-import com.github.hashicraft.projector.ui.PictureBlockScreen;
+import com.github.hashicraft.projector.state.StatefulBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
@@ -21,13 +18,12 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class PictureBlock extends BlockWithEntity {
+public class PictureBlock extends StatefulBlock {
 
   public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
   public PictureBlock(Settings settings) {
     super(settings);
-    this.setDefaultState(this.stateManager.getDefaultState());
   }
 
   @Override

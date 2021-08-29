@@ -55,7 +55,7 @@ public class PictureBlockEntityRenderer<T extends PictureBlockEntity> implements
     }
 
     RenderSystem.enableDepthTest();
-    RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+    RenderSystem.setShader(GameRenderer::getPositionTexShader);
     RenderSystem.setShaderTexture(0, data.identifier);
 
     RenderSystem.enableDepthTest();
@@ -80,22 +80,22 @@ public class PictureBlockEntityRenderer<T extends PictureBlockEntity> implements
 
     switch (direction) {
       case NORTH:
-        zTranslate = -0.001F;
+        zTranslate = -0.010F;
         zOffset = 1.0F;
         xOffset = 1.0F;
         yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0F);
         break;
       case SOUTH:
-        zTranslate = 0.001F;
+        zTranslate = 0.010F;
         break;
       case EAST:
-        xTranslate = 0.001F;
+        xTranslate = 0.010F;
         zOffset = 1.0F;
         yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(90.0F);
         break;
       case WEST:
         yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(-90.0F);
-        xTranslate = -0.001F;
+        xTranslate = -0.010F;
         xOffset = 1.0F;
         break;
     }
