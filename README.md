@@ -30,6 +30,14 @@ we plan to add more features to the mod, such as an increase number of settable 
 
 When using the mod in a server environment, the currently selected image is synced to all clients, so that all clients will display the same image.
 
+### Redstone power
+To display a picture blocks must be redstone powered, at present any signal will do, we plan to add other blocks that integrate with redstone for example, to change the displayed picture at a later date.
+
+### Crafting
+To create a `Picture Block` in survival mode a recipe must be used consisting of 6 x Oak Planks, 1 x Redstone dust, 1 x Glass block.
+
+![](images/screen6.png)
+
 ## Setup
 This mod requires [Fabric](https://fabricmc.net/), the [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api), and minecraft 1.17.1 or later.
 
