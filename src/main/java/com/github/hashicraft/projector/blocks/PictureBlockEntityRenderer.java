@@ -130,5 +130,3 @@ public class PictureBlockEntityRenderer<T extends PictureBlockEntity> implements
     // disabling Cull means the texture is visible from two sides
     // RenderSystem.disableCull();
   }
-
-}
