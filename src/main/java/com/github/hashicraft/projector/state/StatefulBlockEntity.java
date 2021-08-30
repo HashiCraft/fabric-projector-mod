@@ -70,7 +70,9 @@ public class StatefulBlockEntity extends BlockEntity implements BlockEntityClien
       field.setAccessible(true);
       if (field.isAnnotationPresent(Syncable.class)) {
         try {
-          this.serverState.data.put(field.getName(), field.get(this));
+          if (field.get(this) != null) {
+            this.serverState.data.put(field.getName(), field.get(this));
+          }
         } catch (IllegalArgumentException e) {
           e.printStackTrace();
         } catch (IllegalAccessException e) {
