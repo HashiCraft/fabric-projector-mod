@@ -9,9 +9,9 @@ import net.minecraft.util.ActionResult;
 public interface PictureBlockClicked {
 
   Event<PictureBlockClicked> EVENT = EventFactory.createArrayBacked(PictureBlockClicked.class,
-      (listeners) -> (block) -> {
+      (listeners) -> (block, callback) -> {
         for (PictureBlockClicked listener : listeners) {
-          ActionResult result = listener.interact(block);
+          ActionResult result = listener.interact(block, callback);
 
           if (result != ActionResult.PASS) {
             return result;
@@ -21,5 +21,5 @@ public interface PictureBlockClicked {
         return ActionResult.PASS;
       });
 
-  ActionResult interact(PictureBlockEntity block);
+  ActionResult interact(PictureBlockEntity block, PictureBlockGuiCallback callback);
 }

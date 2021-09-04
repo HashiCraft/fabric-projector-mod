@@ -50,7 +50,7 @@ public class PictureBlockEntityRenderer<T extends PictureBlockEntity> implements
     }
 
     // only enable if the block is powered
-    if (!dimensions.isStronglyPowered && !dimensions.isWeaklyPowered) {
+    if (!dimensions.isPowered) {
       return;
     }
 
@@ -130,3 +130,4 @@ public class PictureBlockEntityRenderer<T extends PictureBlockEntity> implements
     // disabling Cull means the texture is visible from two sides
     // RenderSystem.disableCull();
   }
+}

@@ -3,11 +3,10 @@ package com.github.hashicraft.projector.blocks;
 import java.util.ArrayList;
 
 import com.github.hashicraft.projector.ProjectorMod;
-import com.github.hashicraft.projector.downloader.FileDownloader;
-import com.github.hashicraft.projector.state.EntityStateData;
-import com.github.hashicraft.projector.state.StatefulBlockEntity;
-import com.github.hashicraft.projector.state.Syncable;
+import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
+import com.github.hashicraft.stateful.blocks.Syncable;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.state.property.Properties;
@@ -27,43 +26,32 @@ public class PictureBlockEntity extends StatefulBlockEntity {
     public float width = 0.0F;
     public float height = 0.0F;
     public boolean mainBlock = false;
-    public boolean isStronglyPowered = false;
-    public boolean isWeaklyPowered = false;
+    public boolean isPowered = false;
 
-    public PictureBlockDimensions(float width, float height, boolean mainBlock, boolean isStronglyPowered,
-        boolean isWeaklyPowered) {
-
+    public PictureBlockDimensions(float width, float height, boolean mainBlock, boolean isPowered) {
       this.width = width;
       this.height = height;
       this.mainBlock = mainBlock;
-      this.isStronglyPowered = isStronglyPowered;
-      this.isWeaklyPowered = isWeaklyPowered;
+      this.isPowered = isPowered;
     }
   }
 
   public PictureBlockEntity(BlockPos pos, BlockState state) {
-    super(ProjectorMod.PICTURE_BLOCK_ENTITY, pos, state);
+    super(ProjectorMod.PICTURE_BLOCK_ENTITY, pos, state, null);
     pictures = new ArrayList<String>();
   }
 
-  @Override
-  public void serverStateUpdated(EntityStateData data) {
-    super.serverStateUpdated(data);
-
-    // Pre cache all images
-    for (String picture : pictures) {
-      FileDownloader.getInstance().download(picture);
-    }
+  public PictureBlockEntity(BlockPos pos, BlockState state, Block parent) {
+    super(ProjectorMod.PICTURE_BLOCK_ENTITY, pos, state, parent);
+    pictures = new ArrayList<String>();
   }
 
   public void clearPictures() {
     pictures.clear();
-    this.markForUpdate();
   }
 
   public void addPicture(String location) {
     pictures.add(location);
-    this.markForUpdate();
   }
 
   public void nextPicture() {
@@ -72,8 +60,6 @@ public class PictureBlockEntity extends StatefulBlockEntity {
     if (currentPicture >= pictures.size()) {
       currentPicture = 0;
     }
-
-    this.markForUpdate();
   }
 
   public void previousPicture() {
@@ -82,8 +68,6 @@ public class PictureBlockEntity extends StatefulBlockEntity {
     if (currentPicture < 0) {
       currentPicture = pictures.size() - 1;
     }
-
-    this.markForUpdate();
   }
 
   public String getCurrentPicture() {
@@ -110,10 +94,11 @@ public class PictureBlockEntity extends StatefulBlockEntity {
     World world = this.getWorld();
 
     Boolean isMainBlock = true;
-    Boolean isStronglyPowered = false;
-    Boolean isWeaklyPowered = false;
+    Boolean isPowered = false;
     float width = 1.0F;
     float height = 1.0F;
+
+    // default SOUTH
     Direction startBlockDirection = Direction.WEST;
     Direction widthBlockDirection = Direction.EAST;
 
@@ -131,15 +116,16 @@ public class PictureBlockEntity extends StatefulBlockEntity {
         startBlockDirection = Direction.SOUTH;
         widthBlockDirection = Direction.NORTH;
         break;
+      case SOUTH:
+        startBlockDirection = Direction.WEST;
+        widthBlockDirection = Direction.EAST;
+        break;
     }
 
     // Check if the block is redstone powered
     int power = world.getReceivedRedstonePower(pos);
-    if (power > 6) {
-      isStronglyPowered = true;
-      isWeaklyPowered = false;
-    } else if (power > 0) {
-      isWeaklyPowered = true;
+    if (power > 0) {
+      isPowered = true;
     }
 
     // Check if I am the start block, there should be nothing to the right
@@ -161,7 +147,7 @@ public class PictureBlockEntity extends StatefulBlockEntity {
     }
 
     if (!isMainBlock) {
-      return new PictureBlockDimensions(0, 0, false, false, false);
+      return new PictureBlockDimensions(0, 0, false, false);
     }
 
     // check the east faces for connected block
@@ -172,11 +158,8 @@ public class PictureBlockEntity extends StatefulBlockEntity {
     while (foundBlock != null && foundBlock.getType() == this.getType()) {
       width++;
 
-      if (power > 6) {
-        isStronglyPowered = true;
-        isWeaklyPowered = false;
-      } else if (power > 0 && !isStronglyPowered) {
-        isWeaklyPowered = true;
+      if (power > 0) {
+        isPowered = true;
       }
 
       // check the next block
@@ -200,6 +183,6 @@ public class PictureBlockEntity extends StatefulBlockEntity {
       foundBlock = world.getBlockEntity(checkPos);
     }
 
-    return new PictureBlockDimensions(width, height, true, isStronglyPowered, isWeaklyPowered);
+    return new PictureBlockDimensions(width, height, isMainBlock, isPowered);
   }
 }

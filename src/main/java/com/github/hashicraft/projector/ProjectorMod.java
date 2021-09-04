@@ -2,8 +2,7 @@ package com.github.hashicraft.projector;
 
 import com.github.hashicraft.projector.blocks.PictureBlock;
 import com.github.hashicraft.projector.blocks.PictureBlockEntity;
-import com.github.hashicraft.projector.state.EntityServerState;
-
+import com.github.hashicraft.stateful.blocks.EntityServerState;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;

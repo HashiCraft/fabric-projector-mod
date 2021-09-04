@@ -10,11 +10,13 @@ import net.minecraft.text.LiteralText;
 import java.util.ArrayList;
 
 import com.github.hashicraft.projector.blocks.PictureBlockEntity;
+import com.github.hashicraft.projector.events.PictureBlockGuiCallback;
 
 public class PictureBlockGui extends LightweightGuiDescription {
   private ArrayList<WTextField> urlFields = new ArrayList<WTextField>();
 
   private PictureBlockEntity currentEntity;
+  private PictureBlockGuiCallback callback;
 
   public PictureBlockGui() {
     WGridPanel root = new WGridPanel();
@@ -61,6 +63,9 @@ public class PictureBlockGui extends LightweightGuiDescription {
           currentEntity.addPicture(text);
         }
       }
+
+      // notify the opener that the dialog has completed
+      this.callback.onSave();
     });
 
     root.add(button, 0, 7, 16, 1);
@@ -68,17 +73,10 @@ public class PictureBlockGui extends LightweightGuiDescription {
     root.validate(this);
   }
 
-  public ArrayList<String> getURLs() {
-    ArrayList<String> urls = new ArrayList<String>();
-    for (WTextField urlField : urlFields) {
-      urls.add(urlField.getText());
-    }
-
-    return urls;
-  }
-
-  public void setURLs(PictureBlockEntity pictureBlockEntity) {
+  public void setup(PictureBlockEntity pictureBlockEntity, PictureBlockGuiCallback callback) {
     this.currentEntity = pictureBlockEntity;
+    this.callback = callback;
+
     ArrayList<String> urls = pictureBlockEntity.getPictures();
 
     int n = 0;

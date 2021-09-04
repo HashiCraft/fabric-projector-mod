@@ -16,13 +16,13 @@ public class ProjectorModClient implements ClientModInitializer {
     // Here we will put client-only registration code
     BlockEntityRendererRegistry.INSTANCE.register(ProjectorMod.PICTURE_BLOCK_ENTITY, PictureBlockEntityRenderer::new);
 
-    PictureBlockClicked.EVENT.register((block) -> {
+    PictureBlockClicked.EVENT.register((block, callback) -> {
       PictureBlockGui gui = new PictureBlockGui();
       PictureBlockScreen screen = new PictureBlockScreen(gui);
       MinecraftClient.getInstance().setScreen(screen);
 
       // set the default state
-      gui.setURLs(block);
+      gui.setup(block, callback);
 
       return ActionResult.PASS;
     });

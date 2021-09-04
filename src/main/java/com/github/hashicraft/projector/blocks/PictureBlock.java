@@ -1,7 +1,7 @@
 package com.github.hashicraft.projector.blocks;
 
 import com.github.hashicraft.projector.events.PictureBlockClicked;
-import com.github.hashicraft.projector.state.StatefulBlock;
+import com.github.hashicraft.stateful.blocks.StatefulBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -41,11 +41,15 @@ public class PictureBlock extends StatefulBlock {
         }
 
         // call the event that is handled in the client mod
-        PictureBlockClicked.EVENT.invoker().interact(blockEntity);
+        PictureBlockClicked.EVENT.invoker().interact(blockEntity, () -> {
+          blockEntity.markForUpdate();
+        });
+
         return ActionResult.SUCCESS;
       }
 
       blockEntity.nextPicture();
+      blockEntity.markForUpdate();
     }
 
     return ActionResult.SUCCESS;
@@ -58,7 +62,7 @@ public class PictureBlock extends StatefulBlock {
 
   @Override
   public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-    PictureBlockEntity blockEntity = new PictureBlockEntity(pos, state);
+    PictureBlockEntity blockEntity = new PictureBlockEntity(pos, state, this);
 
     return blockEntity;
   }
