@@ -26,4 +26,4 @@ jobs:
       uses: actions/upload-artifact@v2.2.2
       with:
         name: fabric-projector-1.0.0.jar
-        path: ./build/libs/fabric-projector-1.0.0.jar 
+        path: ./build/libs/fabric-projector-1.0.1.jar 
