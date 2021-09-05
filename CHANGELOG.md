@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [1.0.3] - 
+
+
+## [1.0.2] - 2021/09/05
 ### Added
 - Ability to load local files
 
-## [1.0.2] - 2021/09/05
 ### Changed
 - FileDownloader now retries a file with backoff
 
