@@ -37,6 +37,9 @@ dependencies {
   modImplementation include("io.github.cottonmc:LibGui:${project.libgui_version}")
 
 	modImplementation include("com.github.hashicraft:fabric-stateful-mod:${stateful_version}")
+
+// dependency to enable retries
+  implementation include('net.jodah:failsafe:2.4.3')
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
 }
