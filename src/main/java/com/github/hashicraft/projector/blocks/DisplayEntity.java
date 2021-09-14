@@ -97,6 +97,7 @@ public class DisplayEntity extends StatefulBlockEntity {
     Boolean isPowered = false;
     float width = 1.0F;
     float height = 1.0F;
+    float curHeight = 1.0F;
 
     // default SOUTH
     Direction startBlockDirection = Direction.WEST;
@@ -150,37 +151,51 @@ public class DisplayEntity extends StatefulBlockEntity {
       return new DisplayDimensions(0, 0, false, false);
     }
 
-    // check the east faces for connected block
-    checkPos = currentPos.offset(widthBlockDirection);
-    foundBlock = world.getBlockEntity(checkPos);
-    power = world.getReceivedRedstonePower(checkPos);
+    BlockPos xPos = currentPos;
 
-    while (foundBlock != null && foundBlock.getType() == this.getType()) {
-      width++;
+    // check the x
+    while (true) {
 
-      if (power > 0) {
-        isPowered = true;
+      // check the y
+      curHeight = 1;
+      while (true) {
+        checkPos = currentPos.offset(Direction.UP);
+        foundBlock = world.getBlockEntity(checkPos);
+
+        if (foundBlock == null || foundBlock.getType() != this.getType()) {
+          currentPos = xPos; // reset the x
+          break;
+        }
+
+        curHeight++;
+        if (curHeight >= height) {
+          height = curHeight;
+        }
+
+        currentPos = foundBlock.getPos();
+
+        power = world.getReceivedRedstonePower(checkPos);
+        if (!isPowered && power > 0) {
+          isPowered = true;
+        }
       }
 
-      // check the next block
-      currentPos = foundBlock.getPos();
+      // check the east faces for connected block
       checkPos = currentPos.offset(widthBlockDirection);
       foundBlock = world.getBlockEntity(checkPos);
-      power = world.getReceivedRedstonePower(checkPos);
-    }
 
-    // check the top faces for connected blocks
-    currentPos = this.getPos();
-    checkPos = currentPos.offset(Direction.UP);
-    foundBlock = world.getBlockEntity(checkPos);
+      if (foundBlock == null || foundBlock.getType() != this.getType()) {
+        break; // no more blocks
+      }
 
-    while (foundBlock != null && foundBlock.getType() == this.getType()) {
-      height++;
-
-      // check the next block
+      width++;
       currentPos = foundBlock.getPos();
-      checkPos = currentPos.offset(Direction.UP);
-      foundBlock = world.getBlockEntity(checkPos);
+      xPos = currentPos;
+
+      power = world.getReceivedRedstonePower(checkPos);
+      if (!isPowered && power > 0) {
+        isPowered = true;
+      }
     }
 
     return new DisplayDimensions(width, height, isMainBlock, isPowered);
