@@ -1,5 +1,6 @@
 package com.github.hashicraft.projector.blocks;
 
+import com.github.hashicraft.projector.ProjectorMod;
 import com.github.hashicraft.projector.blocks.DisplayEntity.DisplayDimensions;
 import com.github.hashicraft.projector.downloader.FileDownloader;
 import com.github.hashicraft.projector.downloader.FileDownloader.PictureData;
@@ -15,13 +16,13 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3f;
 
 public class DisplayEntityRenderer<T extends DisplayEntity> implements BlockEntityRenderer<T> {
-
   public DisplayEntityRenderer(BlockEntityRendererFactory.Context ctx) {
   }
 
@@ -43,10 +44,12 @@ public class DisplayEntityRenderer<T extends DisplayEntity> implements BlockEnti
       return;
     }
 
-    // get the identity
+    
+    // get the texture or fallback to placeholder
+    Identifier texture = ProjectorMod.PLACEHOLDER_TEXTURE;
     PictureData data = FileDownloader.getInstance().getPictureDataForURL(url, true);
-    if (data == null || data.identifier == null) {
-      return;
+    if (data != null && data.identifier != null) {
+      texture = data.identifier;
     }
 
     // only enable if the block is powered
@@ -56,7 +59,7 @@ public class DisplayEntityRenderer<T extends DisplayEntity> implements BlockEnti
 
     RenderSystem.enableDepthTest();
     RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    RenderSystem.setShaderTexture(0, data.identifier);
+    RenderSystem.setShaderTexture(0, texture);
 
     RenderSystem.enableDepthTest();
     RenderSystem.enableBlend();

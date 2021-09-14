@@ -22,6 +22,7 @@ public class ProjectorMod implements ModInitializer {
   public static final String MODID = "projector";
 
   public static final Identifier DISPLAY_ID = identifier("display");
+  public static final Identifier PLACEHOLDER_TEXTURE = identifier("textures/block/display_placeholder.png");
   public static final Block DISPLAY = new Display(FabricBlockSettings.of(Material.METAL).strength(4.0f).nonOpaque());
   public static BlockEntityType<DisplayEntity> DISPLAY_ENTITY;
 
