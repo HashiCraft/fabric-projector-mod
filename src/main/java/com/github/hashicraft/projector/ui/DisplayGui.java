@@ -1,16 +1,19 @@
 package com.github.hashicraft.projector.ui;
 
+import java.util.ArrayList;
+
+import com.github.hashicraft.projector.blocks.DisplayEntity;
+import com.github.hashicraft.projector.events.DisplayGuiCallback;
+
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WTextField;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.LiteralText;
-import java.util.ArrayList;
-
-import com.github.hashicraft.projector.blocks.DisplayEntity;
-import com.github.hashicraft.projector.events.DisplayGuiCallback;
 
 public class DisplayGui extends LightweightGuiDescription {
   private ArrayList<WTextField> urlFields = new ArrayList<WTextField>();
@@ -18,7 +21,10 @@ public class DisplayGui extends LightweightGuiDescription {
   private DisplayEntity currentEntity;
   private DisplayGuiCallback callback;
 
-  public DisplayGui() {
+  public DisplayGui(DisplayEntity display) {
+    ArrayList<String> urls = display.getPictures();
+
+
     WGridPanel root = new WGridPanel();
     setRootPanel(root);
     root.setInsets(Insets.ROOT_PANEL);
@@ -55,34 +61,43 @@ public class DisplayGui extends LightweightGuiDescription {
     WButton button = new WButton(new LiteralText("Save"));
     button.setOnClick(() -> {
       System.out.println("URLs saved");
-      currentEntity.clearPictures();
+      display.clearPictures();
 
       for (WTextField url : urlFields) {
         String text = url.getText();
         if (!text.isEmpty()) {
-          currentEntity.addPicture(text);
+          display.addPicture(text);
         }
       }
 
       // notify the opener that the dialog has completed
-      this.callback.onSave();
+      // this.callback.onSave();
+
+      MinecraftClient.getInstance().player.closeScreen();
+      MinecraftClient.getInstance().setScreen((Screen)null);
     });
 
     root.add(button, 0, 7, 16, 1);
-
-    root.validate(this);
-  }
-
-  public void setup(DisplayEntity pictureBlockEntity, DisplayGuiCallback callback) {
-    this.currentEntity = pictureBlockEntity;
-    this.callback = callback;
-
-    ArrayList<String> urls = pictureBlockEntity.getPictures();
 
     int n = 0;
     for (String url : urls) {
       urlFields.get(n).setText(url);
       n++;
     }
+
+    root.validate(this);
   }
+
+  // public void setup(DisplayEntity pictureBlockEntity, DisplayGuiCallback callback) {
+  //   this.currentEntity = pictureBlockEntity;
+  //   this.callback = callback;
+
+  //   ArrayList<String> urls = pictureBlockEntity.getPictures();
+
+  //   int n = 0;
+  //   for (String url : urls) {
+  //     urlFields.get(n).setText(url);
+  //     n++;
+  //   }
+  // }
 }

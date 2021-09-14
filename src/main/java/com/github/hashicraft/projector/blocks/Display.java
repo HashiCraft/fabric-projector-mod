@@ -1,7 +1,9 @@
 package com.github.hashicraft.projector.blocks;
 
 import com.github.hashicraft.projector.ProjectorMod;
-import com.github.hashicraft.projector.events.DisplayClicked;
+import com.github.hashicraft.projector.items.Remote;
+import com.github.hashicraft.projector.ui.DisplayGui;
+import com.github.hashicraft.projector.ui.DisplayScreen;
 import com.github.hashicraft.stateful.blocks.StatefulBlock;
 
 import net.minecraft.block.Block;
@@ -9,12 +11,14 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -101,27 +105,27 @@ public class Display extends StatefulBlock {
       BlockHitResult hit) {
 
     DisplayEntity blockEntity = (DisplayEntity) world.getBlockEntity(pos);
-
     if (world.isClient()) {
-      if (player.isInSneakingPose()) {
-
-        // onlyt show the menu for the main picture block
+      if (player.getMainHandStack().isOf(ProjectorMod.REMOTE)) {
+        // only show the menu for the main picture block
         if (!blockEntity.detectNearbyBlocks().mainBlock) {
           return ActionResult.SUCCESS;
         }
 
-        // call the event that is handled in the client mod
-        DisplayClicked.EVENT.invoker().interact(blockEntity, () -> {
-          blockEntity.markForUpdate();
-        });
+        MinecraftClient.getInstance().setScreen(new DisplayScreen(new DisplayGui(blockEntity)));
+        //call the event that is handled in the client mod
+        // DisplayClicked.EVENT.invoker().interact(blockEntity, () -> {
+        //   blockEntity.markForUpdate();
+        // });
+
+        Remote remote = (Remote)player.getMainHandStack().getItem();
+        remote.link(player.getMainHandStack(), pos);
+        player.sendMessage(new LiteralText("Linked the remote to " + pos.toShortString()), false);
 
         return ActionResult.SUCCESS;
       }
-
-      blockEntity.nextPicture();
-      blockEntity.markForUpdate();
     }
-
+    
     return ActionResult.SUCCESS;
   }
 
@@ -132,9 +136,7 @@ public class Display extends StatefulBlock {
 
   @Override
   public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-    DisplayEntity blockEntity = new DisplayEntity(pos, state, this);
-
-    return blockEntity;
+    return new DisplayEntity(pos, state, this);
   }
 
   @Override

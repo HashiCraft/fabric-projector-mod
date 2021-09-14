@@ -2,6 +2,7 @@ package com.github.hashicraft.projector;
 
 import com.github.hashicraft.projector.blocks.Display;
 import com.github.hashicraft.projector.blocks.DisplayEntity;
+import com.github.hashicraft.projector.items.Remote;
 import com.github.hashicraft.stateful.blocks.EntityServerState;
 
 import net.fabricmc.api.ModInitializer;
@@ -13,6 +14,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -20,6 +22,9 @@ import net.minecraft.util.registry.Registry;
 
 public class ProjectorMod implements ModInitializer {
   public static final String MODID = "projector";
+
+  public static final Identifier REMOTE_ID = identifier("remote");
+	public static Item REMOTE;
 
   public static final Identifier DISPLAY_ID = identifier("display");
   public static final Identifier PLACEHOLDER_TEXTURE = identifier("textures/block/display_placeholder.png");
@@ -30,6 +35,8 @@ public class ProjectorMod implements ModInitializer {
 
   @Override
   public void onInitialize() {
+    REMOTE = Registry.register(Registry.ITEM, REMOTE_ID, new Remote(new Item.Settings().group(ITEM_GROUP)));
+
     Registry.register(Registry.BLOCK, DISPLAY_ID, DISPLAY);
     Registry.register(Registry.ITEM, DISPLAY_ID, new BlockItem(DISPLAY, new FabricItemSettings().group(ITEM_GROUP)));
     DISPLAY_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, DISPLAY_ID, FabricBlockEntityTypeBuilder.create(DisplayEntity::new, DISPLAY).build(null));

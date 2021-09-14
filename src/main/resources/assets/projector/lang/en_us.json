@@ -1,4 +1,5 @@
 {
   "itemGroup.projector.general": "Projector",
-  "block.projector.display": "Display"
+  "block.projector.display": "Display",
+  "item.projector.remote": "Remote Control"
 }
