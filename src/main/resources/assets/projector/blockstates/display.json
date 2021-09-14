@@ -1,0 +1,83 @@
+{
+  "variants": {
+    "facing=north,bottom=false,top=false,left=false,right=true": { "model": "projector:block/display_right_connected", "uvlock": false },
+    "facing=east,bottom=false,top=false,left=false,right=true":  { "model": "projector:block/display_right_connected", "y":  90, "uvlock": false },
+    "facing=south,bottom=false,top=false,left=false,right=true": { "model": "projector:block/display_right_connected", "y": 180, "uvlock": false },
+    "facing=west,bottom=false,top=false,left=false,right=true":  { "model": "projector:block/display_right_connected", "y": 270, "uvlock": false },
+
+    "facing=north,bottom=false,top=false,left=true,right=false": { "model": "projector:block/display_left_connected", "uvlock": false },
+    "facing=east,bottom=false,top=false,left=true,right=false":  { "model": "projector:block/display_left_connected", "y":  90, "uvlock": false },
+    "facing=south,bottom=false,top=false,left=true,right=false": { "model": "projector:block/display_left_connected", "y": 180, "uvlock": false },
+    "facing=west,bottom=false,top=false,left=true,right=false":  { "model": "projector:block/display_left_connected", "y": 270, "uvlock": false },
+
+    "facing=north,bottom=true,top=false,left=false,right=false": { "model": "projector:block/display_bottom_connected", "uvlock": false },
+    "facing=east,bottom=true,top=false,left=false,right=false":  { "model": "projector:block/display_bottom_connected", "y":  90, "uvlock": false },
+    "facing=south,bottom=true,top=false,left=false,right=false": { "model": "projector:block/display_bottom_connected", "y": 180, "uvlock": false },
+    "facing=west,bottom=true,top=false,left=false,right=false":  { "model": "projector:block/display_bottom_connected", "y": 270, "uvlock": false },
+
+    "facing=north,bottom=false,top=true,left=false,right=false": { "model": "projector:block/display_top_connected", "uvlock": false },
+    "facing=east,bottom=false,top=true,left=false,right=false":  { "model": "projector:block/display_top_connected", "y":  90, "uvlock": false },
+    "facing=south,bottom=false,top=true,left=false,right=false": { "model": "projector:block/display_top_connected", "y": 180, "uvlock": false },
+    "facing=west,bottom=false,top=true,left=false,right=false":  { "model": "projector:block/display_top_connected", "y": 270, "uvlock": false },
+
+    "facing=north,bottom=true,top=false,left=false,right=true": { "model": "projector:block/display_bottom_right_connected", "uvlock": false },
+    "facing=east,bottom=true,top=false,left=false,right=true":  { "model": "projector:block/display_bottom_right_connected", "y":  90, "uvlock": false },
+    "facing=south,bottom=true,top=false,left=false,right=true": { "model": "projector:block/display_bottom_right_connected", "y": 180, "uvlock": false },
+    "facing=west,bottom=true,top=false,left=false,right=true":  { "model": "projector:block/display_bottom_right_connected", "y": 270, "uvlock": false },
+    
+    "facing=north,bottom=true,top=false,left=true,right=false": { "model": "projector:block/display_bottom_left_connected", "uvlock": false },
+    "facing=east,bottom=true,top=false,left=true,right=false":  { "model": "projector:block/display_bottom_left_connected", "y":  90, "uvlock": false },
+    "facing=south,bottom=true,top=false,left=true,right=false": { "model": "projector:block/display_bottom_left_connected", "y": 180, "uvlock": false },
+    "facing=west,bottom=true,top=false,left=true,right=false":  { "model": "projector:block/display_bottom_left_connected", "y": 270, "uvlock": false },
+
+    "facing=north,bottom=false,top=true,left=false,right=true": { "model": "projector:block/display_top_right_connected", "uvlock": false },
+    "facing=east,bottom=false,top=true,left=false,right=true":  { "model": "projector:block/display_top_right_connected", "y":  90, "uvlock": false },
+    "facing=south,bottom=false,top=true,left=false,right=true": { "model": "projector:block/display_top_right_connected", "y": 180, "uvlock": false },
+    "facing=west,bottom=false,top=true,left=false,right=true":  { "model": "projector:block/display_top_right_connected", "y": 270, "uvlock": false },
+    
+    "facing=north,bottom=false,top=true,left=true,right=false": { "model": "projector:block/display_top_left_connected", "uvlock": false },
+    "facing=east,bottom=false,top=true,left=true,right=false":  { "model": "projector:block/display_top_left_connected", "y":  90, "uvlock": false },
+    "facing=south,bottom=false,top=true,left=true,right=false": { "model": "projector:block/display_top_left_connected", "y": 180, "uvlock": false },
+    "facing=west,bottom=false,top=true,left=true,right=false":  { "model": "projector:block/display_top_left_connected", "y": 270, "uvlock": false },
+
+    "facing=north,bottom=false,top=true,left=true,right=true": { "model": "projector:block/display_top_left_right_connected", "uvlock": false },
+    "facing=east,bottom=false,top=true,left=true,right=true":  { "model": "projector:block/display_top_left_right_connected", "y":  90, "uvlock": false },
+    "facing=south,bottom=false,top=true,left=true,right=true": { "model": "projector:block/display_top_left_right_connected", "y": 180, "uvlock": false },
+    "facing=west,bottom=false,top=true,left=true,right=true":  { "model": "projector:block/display_top_left_right_connected", "y": 270, "uvlock": false },
+
+    "facing=north,bottom=true,top=false,left=true,right=true": { "model": "projector:block/display_bottom_left_right_connected", "uvlock": false },
+    "facing=east,bottom=true,top=false,left=true,right=true":  { "model": "projector:block/display_bottom_left_right_connected", "y":  90, "uvlock": false },
+    "facing=south,bottom=true,top=false,left=true,right=true": { "model": "projector:block/display_bottom_left_right_connected", "y": 180, "uvlock": false },
+    "facing=west,bottom=true,top=false,left=true,right=true":  { "model": "projector:block/display_bottom_left_right_connected", "y": 270, "uvlock": false },
+
+    "facing=north,bottom=true,top=true,left=true,right=false": { "model": "projector:block/display_bottom_top_left_connected", "uvlock": false },
+    "facing=east,bottom=true,top=true,left=true,right=false":  { "model": "projector:block/display_bottom_top_left_connected", "y":  90, "uvlock": false },
+    "facing=south,bottom=true,top=true,left=true,right=false": { "model": "projector:block/display_bottom_top_left_connected", "y": 180, "uvlock": false },
+    "facing=west,bottom=true,top=true,left=true,right=false":  { "model": "projector:block/display_bottom_top_left_connected", "y": 270, "uvlock": false },
+
+    "facing=north,bottom=true,top=true,left=false,right=true": { "model": "projector:block/display_bottom_top_right_connected", "uvlock": false },
+    "facing=east,bottom=true,top=true,left=false,right=true":  { "model": "projector:block/display_bottom_top_right_connected", "y":  90, "uvlock": false },
+    "facing=south,bottom=true,top=true,left=false,right=true": { "model": "projector:block/display_bottom_top_right_connected", "y": 180, "uvlock": false },
+    "facing=west,bottom=true,top=true,left=false,right=true":  { "model": "projector:block/display_bottom_top_right_connected", "y": 270, "uvlock": false },
+
+    "facing=north,bottom=true,top=true,left=false,right=false": { "model": "projector:block/display_bottom_top_connected", "uvlock": false },
+    "facing=east,bottom=true,top=true,left=false,right=false":  { "model": "projector:block/display_bottom_top_connected", "y":  90, "uvlock": false },
+    "facing=south,bottom=true,top=true,left=false,right=false": { "model": "projector:block/display_bottom_top_connected", "y": 180, "uvlock": false },
+    "facing=west,bottom=true,top=true,left=false,right=false":  { "model": "projector:block/display_bottom_top_connected", "y": 270, "uvlock": false },
+
+    "facing=north,bottom=false,top=false,left=true,right=true": { "model": "projector:block/display_left_right_connected", "uvlock": false },
+    "facing=east,bottom=false,top=false,left=true,right=true":  { "model": "projector:block/display_left_right_connected", "y":  90, "uvlock": false },
+    "facing=south,bottom=false,top=false,left=true,right=true": { "model": "projector:block/display_left_right_connected", "y": 180, "uvlock": false },
+    "facing=west,bottom=false,top=false,left=true,right=true":  { "model": "projector:block/display_left_right_connected", "y": 270, "uvlock": false },
+
+    "facing=north,bottom=true,top=true,left=true,right=true": { "model": "projector:block/display_bottom_top_left_right_connected", "uvlock": false },
+    "facing=east,bottom=true,top=true,left=true,right=true":  { "model": "projector:block/display_bottom_top_left_right_connected", "y":  90, "uvlock": false },
+    "facing=south,bottom=true,top=true,left=true,right=true": { "model": "projector:block/display_bottom_top_left_right_connected", "y": 180, "uvlock": false },
+    "facing=west,bottom=true,top=true,left=true,right=true":  { "model": "projector:block/display_bottom_top_left_right_connected", "y": 270, "uvlock": false },
+
+    "facing=north,bottom=false,top=false,left=false,right=false": { "model": "projector:block/display_none_connected", "uvlock": false },
+    "facing=east,bottom=false,top=false,left=false,right=false":  { "model": "projector:block/display_none_connected", "y":  90, "uvlock": false },
+    "facing=south,bottom=false,top=false,left=false,right=false": { "model": "projector:block/display_none_connected", "y": 180, "uvlock": false },
+    "facing=west,bottom=false,top=false,left=false,right=false":  { "model": "projector:block/display_none_connected", "y": 270, "uvlock": false }
+  }
+}

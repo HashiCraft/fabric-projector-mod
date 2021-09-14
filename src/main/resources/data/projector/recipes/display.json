@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+      "#R#",
+      "#G#",
+      "#R#"
+  ],
+  "key": {
+      "#": {
+          "item": "minecraft:oak_planks"
+      },
+      "R": {
+          "item": "minecraft:redstone"
+      },
+      "G": {
+          "item": "minecraft:glass"
+      }
+  },
+  "result": {
+    "item": "projector:picture_block",
+    "count": 1
+  },
+  "group": "projector"
+}

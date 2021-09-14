@@ -1,3 +1,4 @@
 {
-  "block.projector.picture_block": "Projector Frame"
+  "itemGroup.projector.general": "Projector",
+  "block.projector.display": "Display"
 }
