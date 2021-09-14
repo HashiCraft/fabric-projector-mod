@@ -121,6 +121,8 @@ public class DisplayEntity extends StatefulBlockEntity {
         startBlockDirection = Direction.WEST;
         widthBlockDirection = Direction.EAST;
         break;
+      default:
+        break;
     }
 
     // Check if the block is redstone powered
