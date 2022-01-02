@@ -1,10 +1,13 @@
 package com.github.hashicraft.projector.blocks;
 
 import com.github.hashicraft.projector.ProjectorMod;
+import com.github.hashicraft.projector.events.DisplayClicked;
 import com.github.hashicraft.projector.items.Remote;
 import com.github.hashicraft.projector.ui.DisplayGui;
 import com.github.hashicraft.projector.ui.DisplayScreen;
 import com.github.hashicraft.stateful.blocks.StatefulBlock;
+
+import org.apache.commons.logging.Log;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -41,17 +44,12 @@ public class Display extends StatefulBlock {
 
   public Display(Settings settings) {
     super(settings);
-    setDefaultState(
-      this.stateManager.getDefaultState()
-      .with(FACING, Direction.NORTH)
-      .with(TOP, false)
-      .with(BOTTOM, false)
-      .with(LEFT, false)
-      .with(RIGHT, false)
-    );
+    setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(TOP, false)
+        .with(BOTTOM, false).with(LEFT, false).with(RIGHT, false));
   }
 
-  public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+  public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState,
+      WorldAccess world, BlockPos pos, BlockPos neighborPos) {
     Direction facing = state.get(FACING);
     Direction opposite = facing.getOpposite();
 
@@ -86,7 +84,7 @@ public class Display extends StatefulBlock {
   @Override
   public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
     Direction facing = state.get(FACING);
-    switch(facing) {
+    switch (facing) {
       case NORTH:
         return VoxelShapes.cuboid(0f, 0f, 0.5f, 1f, 1f, 1f);
       case SOUTH:
@@ -112,21 +110,23 @@ public class Display extends StatefulBlock {
           return ActionResult.SUCCESS;
         }
 
-        MinecraftClient.getInstance().setScreen(new DisplayScreen(new DisplayGui(blockEntity)));
-        //call the event that is handled in the client mod
-        // DisplayClicked.EVENT.invoker().interact(blockEntity, () -> {
-        //   blockEntity.markForUpdate();
-        // });
+        // call the event that is handled in the client mod
+        DisplayClicked.EVENT.invoker().interact(blockEntity, () -> {
+          blockEntity.markForUpdate();
+        });
 
-        Remote remote = (Remote)player.getMainHandStack().getItem();
+        Remote remote = (Remote) player.getMainHandStack().getItem();
         remote.link(player.getMainHandStack(), pos);
         player.sendMessage(new LiteralText("Linked the remote to " + pos.toShortString()), false);
 
         return ActionResult.SUCCESS;
       }
+
+      System.out.print("normal click");
+      return ActionResult.SUCCESS;
     }
-    
-    return ActionResult.SUCCESS;
+
+    return ActionResult.PASS;
   }
 
   @Override
