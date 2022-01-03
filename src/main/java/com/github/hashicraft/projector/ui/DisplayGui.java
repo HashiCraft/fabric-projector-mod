@@ -21,9 +21,10 @@ public class DisplayGui extends LightweightGuiDescription {
   private DisplayEntity currentEntity;
   private DisplayGuiCallback callback;
 
-  public DisplayGui(DisplayEntity display) {
-    ArrayList<String> urls = display.getPictures();
+  public DisplayGui(DisplayEntity display, DisplayGuiCallback callback) {
+    this.callback = callback;
 
+    ArrayList<String> urls = display.getPictures();
 
     WGridPanel root = new WGridPanel();
     setRootPanel(root);
@@ -71,10 +72,10 @@ public class DisplayGui extends LightweightGuiDescription {
       }
 
       // notify the opener that the dialog has completed
-      // this.callback.onSave();
+      this.callback.onSave();
 
       MinecraftClient.getInstance().player.closeScreen();
-      MinecraftClient.getInstance().setScreen((Screen)null);
+      MinecraftClient.getInstance().setScreen((Screen) null);
     });
 
     root.add(button, 0, 7, 16, 1);
@@ -87,17 +88,4 @@ public class DisplayGui extends LightweightGuiDescription {
 
     root.validate(this);
   }
-
-  // public void setup(DisplayEntity pictureBlockEntity, DisplayGuiCallback callback) {
-  //   this.currentEntity = pictureBlockEntity;
-  //   this.callback = callback;
-
-  //   ArrayList<String> urls = pictureBlockEntity.getPictures();
-
-  //   int n = 0;
-  //   for (String url : urls) {
-  //     urlFields.get(n).setText(url);
-  //     n++;
-  //   }
-  // }
 }

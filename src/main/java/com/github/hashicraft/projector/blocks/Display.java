@@ -109,7 +109,6 @@ public class Display extends StatefulBlock {
         if (!blockEntity.detectNearbyBlocks().mainBlock) {
           return ActionResult.SUCCESS;
         }
-
         // call the event that is handled in the client mod
         DisplayClicked.EVENT.invoker().interact(blockEntity, () -> {
           blockEntity.markForUpdate();
