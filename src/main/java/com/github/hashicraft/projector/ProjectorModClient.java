@@ -17,12 +17,9 @@ public class ProjectorModClient implements ClientModInitializer {
     BlockEntityRendererRegistry.INSTANCE.register(ProjectorMod.DISPLAY_ENTITY, DisplayEntityRenderer::new);
 
     DisplayClicked.EVENT.register((block, callback) -> {
-      DisplayGui gui = new DisplayGui(block);
+      DisplayGui gui = new DisplayGui(block, callback);
       DisplayScreen screen = new DisplayScreen(gui);
       MinecraftClient.getInstance().setScreen(screen);
-
-      // set the default state
-      // gui.setup(block, callback);
 
       return ActionResult.PASS;
     });

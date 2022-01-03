@@ -44,7 +44,6 @@ public class DisplayEntityRenderer<T extends DisplayEntity> implements BlockEnti
       return;
     }
 
-    
     // get the texture or fallback to placeholder
     Identifier texture = ProjectorMod.PLACEHOLDER_TEXTURE;
     PictureData data = FileDownloader.getInstance().getPictureDataForURL(url, true);
@@ -113,7 +112,7 @@ public class DisplayEntityRenderer<T extends DisplayEntity> implements BlockEnti
     // set the rotation
     matrices.multiply(yRotation);
 
-    Matrix4f matrix4f = matrices.peek().getModel();
+    Matrix4f matrix4f = matrices.peek().getPositionMatrix();
     bufferBuilder.begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 
     bufferBuilder.vertex(matrix4f, displayWidth + 0.125F, 0.125F, 1.0F).texture(1.0F, 1.0F).color(255, 255, 255, 255)
