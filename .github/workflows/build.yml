@@ -25,5 +25,5 @@ jobs:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.2
       with:
-        name: projector-1.0.2.jar
-        path: ./build/libs/projector-1.0.2.jar 
+        name: projector-1.0.3.jar
+        path: ./build/libs/projector-1.0.3.jar 
