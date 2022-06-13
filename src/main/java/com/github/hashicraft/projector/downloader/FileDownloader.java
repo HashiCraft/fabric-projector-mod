@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Hashtable;
 import java.util.concurrent.ExecutorService;
@@ -31,6 +32,7 @@ import net.jodah.failsafe.RetryPolicy;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
+import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Identifier;
 
 public class FileDownloader {
@@ -40,9 +42,13 @@ public class FileDownloader {
     public int width = 0;
     public String location = "";
     public Identifier identifier = null;
+    public Instant created = null;
+    public Instant started = null;
+    public int cacheSeconds = 0;
 
-    public PictureData(String location) {
+    public PictureData(String location, int cacheSeconds) {
       this.location = location;
+      this.cacheSeconds = cacheSeconds;
     }
   }
 
@@ -65,11 +71,11 @@ public class FileDownloader {
   private Object mutex = new Object();
 
   // Asyncronously download an image from the given URL
-  public void download(String url) {
+  public void download(String url, int cacheSeconds) {
     synchronized (mutex) {
       PictureData data = this.cache.get(url);
       if (data == null) {
-        this.downloadFile(url);
+        this.downloadFile(url, cacheSeconds);
       }
     }
   }
@@ -80,14 +86,36 @@ public class FileDownloader {
   //
   // It is safe to call this method in a loop as URL is only ever downloaded
   // once.
-  public PictureData getPictureDataForURL(String url, Boolean download) {
+  // If cacheSeconds is greater than 0 the image is re-downloaded n seconds after
+  // the initial download
+  public PictureData getPictureDataForURL(String url, Boolean download, int cacheSeconds) {
     synchronized (mutex) {
       // attempt to get the url from the cache
       PictureData data = this.cache.get(url);
+      // image does not exist so add to the queue
       if (data == null && download) {
         // add to the queue
-        this.downloadFile(url);
+        this.downloadFile(url, cacheSeconds);
         return null;
+      }
+
+      // check the cache, if the cache seconds is greater than 0 and the image has
+      // already been downloaded
+      if (data != null && data.identifier != null && cacheSeconds > 0 && data.created != null) {
+        // System.out
+        // .println("Cache expired for url:" + url + " cacheSeconds: " + cacheSeconds +
+        // " created: " + data.created);
+        Instant timeNow = Instant.now();
+        long life = Duration.between(data.created, timeNow).toSeconds();
+        if (life > cacheSeconds) {
+          System.out
+              .println("Cache expired for url:" + url + " cacheSeconds: " + cacheSeconds + " lifespan: " + life);
+
+          // add to the queue and redownload
+          data.created = null;
+          data.started = null;
+          this.downloadFile(url, cacheSeconds);
+        }
       }
 
       // if no identifier exists then the image has not completed downloading
@@ -97,19 +125,28 @@ public class FileDownloader {
 
       return data;
     }
+
   }
 
   // downloads the file as a background process
-  private void downloadFile(String location) {
+  private void downloadFile(String location, int cacheSeconds) {
     System.out.println("Starting download for:" + location);
 
     // is already in process?
-    if (this.cache.get(location) != null) {
-      return;
-    }
+    PictureData cd = this.cache.get(location);
+    if (cd != null) {
+      // check if download started
+      if (cd.started != null) {
+        return;
+      }
 
-    // add the url to the cache, we can update this once download is complete
-    this.cache.put(location, new PictureData(location));
+      cd.started = Instant.now();
+    } else {
+      PictureData newP = new PictureData(location, cacheSeconds);
+      // add the url to the cache, we can update this once download is complete
+      newP.started = Instant.now();
+      this.cache.put(location, newP);
+    }
 
     // run in the background
     service.submit(() -> {
@@ -188,16 +225,24 @@ public class FileDownloader {
 
           NativeImage nativeImage = NativeImage.read(targetStream);
           NativeImageBackedTexture nativeTexture = new NativeImageBackedTexture(nativeImage);
-
-          Identifier id = MinecraftClient.getInstance().getTextureManager().registerDynamicTexture("image/pictures",
+          TextureManager tm = MinecraftClient.getInstance().getTextureManager();
+          Identifier id = tm.registerDynamicTexture("image/pictures",
               nativeTexture);
 
+          Identifier oldIdentifier = null;
           // update the cache
           synchronized (mutex) {
             PictureData data = this.cache.get(location);
+            oldIdentifier = data.identifier;
+
             data.identifier = id;
             data.height = bufferedImage.getHeight();
             data.width = bufferedImage.getWidth();
+            data.created = Instant.now();
+          }
+
+          if (oldIdentifier != null) {
+            // tm.destroyTexture(oldIdentifier);
           }
 
           System.out.println("Downloaded url: " + location);

@@ -1,6 +1,11 @@
 package com.github.hashicraft.projector.blocks;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.github.hashicraft.projector.ProjectorMod;
 import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
@@ -15,12 +20,23 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public class DisplayEntity extends StatefulBlockEntity {
-
+  private static Logger logger = LogManager.getLogger(DisplayEntity.class);
   @Syncable
   public int currentPicture;
 
   @Syncable
   public ArrayList<String> pictures;
+
+  @Syncable
+  public Boolean autoRotate;
+
+  @Syncable
+  public int rotateSeconds;
+
+  @Syncable
+  public int cacheSeconds;
+
+  public Instant lastCheck;
 
   public class DisplayDimensions {
     public float width = 0.0F;
@@ -39,6 +55,9 @@ public class DisplayEntity extends StatefulBlockEntity {
   public DisplayEntity(BlockPos pos, BlockState state) {
     super(ProjectorMod.DISPLAY_ENTITY, pos, state, null);
     pictures = new ArrayList<String>();
+    autoRotate = false;
+    rotateSeconds = 0;
+    cacheSeconds = 0;
   }
 
   public DisplayEntity(BlockPos pos, BlockState state, Block parent) {
@@ -52,6 +71,34 @@ public class DisplayEntity extends StatefulBlockEntity {
 
   public void addPicture(String location) {
     pictures.add(location);
+  }
+
+  public void setAutoRotate(Boolean rotate) {
+    autoRotate = rotate;
+  }
+
+  public void setRotateSeconds(int seconds) {
+    rotateSeconds = seconds;
+  }
+
+  public void setCacheSeconds(int seconds) {
+    cacheSeconds = seconds;
+  }
+
+  public Boolean getAutoRotate() {
+    if (autoRotate == null) {
+      return false;
+    }
+
+    return autoRotate;
+  }
+
+  public int getRotateSeconds() {
+    return rotateSeconds;
+  }
+
+  public int getCacheSeconds() {
+    return cacheSeconds;
   }
 
   public void nextPicture() {
@@ -75,7 +122,32 @@ public class DisplayEntity extends StatefulBlockEntity {
       return null;
     }
 
+    if (currentPicture >= pictures.size()) {
+      currentPicture = pictures.size() - 1;
+    }
+
+    // check if we need to increment the picture
+    if (this.autoRotate) {
+      Instant currentTime = Instant.now();
+      if (lastCheck != null) {
+        Duration elapsed = Duration.between(lastCheck, currentTime);
+        // logger.info(currentPicture);
+        // logger.info(elapsed.toSeconds());
+        if (elapsed.toSeconds() > this.rotateSeconds) {
+          currentPicture++;
+          if (currentPicture >= pictures.size()) {
+            currentPicture = 0;
+          }
+
+          lastCheck = currentTime;
+        }
+      } else {
+        lastCheck = currentTime;
+      }
+    }
+
     return pictures.get(currentPicture);
+
   }
 
   public ArrayList<String> getPictures() {

@@ -38,6 +38,7 @@ public class DisplayEntityRenderer<T extends DisplayEntity> implements BlockEnti
 
     // load the picture
     String url = blockEntity.getCurrentPicture();
+    int cacheSeconds = blockEntity.getCacheSeconds();
 
     // no picture ignore
     if (url == null || url.isEmpty()) {
@@ -46,7 +47,7 @@ public class DisplayEntityRenderer<T extends DisplayEntity> implements BlockEnti
 
     // get the texture or fallback to placeholder
     Identifier texture = ProjectorMod.PLACEHOLDER_TEXTURE;
-    PictureData data = FileDownloader.getInstance().getPictureDataForURL(url, true);
+    PictureData data = FileDownloader.getInstance().getPictureDataForURL(url, true, cacheSeconds);
     if (data != null && data.identifier != null) {
       texture = data.identifier;
     }
