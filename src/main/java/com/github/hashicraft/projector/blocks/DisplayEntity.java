@@ -127,7 +127,7 @@ public class DisplayEntity extends StatefulBlockEntity {
     }
 
     // check if we need to increment the picture
-    if (this.autoRotate) {
+    if (this.autoRotate != null && this.autoRotate) {
       Instant currentTime = Instant.now();
       if (lastCheck != null) {
         Duration elapsed = Duration.between(lastCheck, currentTime);
