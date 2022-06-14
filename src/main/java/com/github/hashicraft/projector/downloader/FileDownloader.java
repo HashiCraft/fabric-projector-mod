@@ -77,7 +77,7 @@ public class FileDownloader {
   public void reap() {
     synchronized (cacheMutex) {
       // only recycle when we have a decent size
-      if (recycle.size() > 10) {
+      if (recycle.size() > 20) {
         System.out.println("Reaping cache");
 
         TextureManager tm = MinecraftClient.getInstance().getTextureManager();
