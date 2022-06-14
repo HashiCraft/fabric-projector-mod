@@ -134,6 +134,9 @@ public class DisplayEntityRenderer<T extends DisplayEntity> implements BlockEnti
     RenderSystem.depthMask(true);
     RenderSystem.disableBlend();
 
+    // call reap to clean up any textures
+    FileDownloader.getInstance().reap();
+
     // Cull stops the image from being visible from the back
     // disabling Cull means the texture is visible from two sides
     // RenderSystem.disableCull();

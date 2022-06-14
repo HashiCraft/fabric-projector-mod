@@ -16,6 +16,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -67,8 +68,28 @@ public class FileDownloader {
 
   // stores a cache of pictures
   private Hashtable<String, PictureData> cache = new Hashtable<String, PictureData>();
+  private ArrayList<Identifier> recycle = new ArrayList<Identifier>();
 
   private Object mutex = new Object();
+  private Object cacheMutex = new Object();
+
+  // reap removes any recycled identifiers
+  public void reap() {
+    synchronized (cacheMutex) {
+      // only recycle when we have a decent size
+      if (recycle.size() > 10) {
+        System.out.println("Reaping cache");
+
+        TextureManager tm = MinecraftClient.getInstance().getTextureManager();
+        for (Identifier i : recycle) {
+          System.out.println("destroy texture: " + i.toString());
+          tm.destroyTexture(i);
+        }
+
+        recycle.clear();
+      }
+    }
+  }
 
   // Asyncronously download an image from the given URL
   public void download(String url, int cacheSeconds) {
@@ -233,16 +254,18 @@ public class FileDownloader {
           // update the cache
           synchronized (mutex) {
             PictureData data = this.cache.get(location);
-            oldIdentifier = data.identifier;
+
+            // if we have an existing image add it to the recycle list
+            if (data.identifier != null) {
+              synchronized (cacheMutex) {
+                recycle.add(data.identifier);
+              }
+            }
 
             data.identifier = id;
             data.height = bufferedImage.getHeight();
             data.width = bufferedImage.getWidth();
             data.created = Instant.now();
-          }
-
-          if (oldIdentifier != null) {
-            // tm.destroyTexture(oldIdentifier);
           }
 
           System.out.println("Downloaded url: " + location);
