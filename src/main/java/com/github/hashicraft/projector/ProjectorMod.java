@@ -2,6 +2,7 @@ package com.github.hashicraft.projector;
 
 import com.github.hashicraft.projector.blocks.Display;
 import com.github.hashicraft.projector.blocks.DisplayEntity;
+import com.github.hashicraft.projector.config.ServerConfig;
 import com.github.hashicraft.projector.items.Remote;
 import com.github.hashicraft.stateful.blocks.EntityServerState;
 
@@ -24,14 +25,15 @@ public class ProjectorMod implements ModInitializer {
   public static final String MODID = "projector";
 
   public static final Identifier REMOTE_ID = identifier("remote");
-	public static Item REMOTE;
+  public static Item REMOTE;
 
   public static final Identifier DISPLAY_ID = identifier("display");
   public static final Identifier PLACEHOLDER_TEXTURE = identifier("textures/block/display_placeholder.png");
   public static final Block DISPLAY = new Display(FabricBlockSettings.of(Material.METAL).strength(4.0f).nonOpaque());
   public static BlockEntityType<DisplayEntity> DISPLAY_ENTITY;
 
-  public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(identifier("general"), () -> new ItemStack(DISPLAY));
+  public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(identifier("general"),
+      () -> new ItemStack(DISPLAY));
 
   @Override
   public void onInitialize() {
@@ -39,10 +41,14 @@ public class ProjectorMod implements ModInitializer {
 
     Registry.register(Registry.BLOCK, DISPLAY_ID, DISPLAY);
     Registry.register(Registry.ITEM, DISPLAY_ID, new BlockItem(DISPLAY, new FabricItemSettings().group(ITEM_GROUP)));
-    DISPLAY_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, DISPLAY_ID, FabricBlockEntityTypeBuilder.create(DisplayEntity::new, DISPLAY).build(null));
+    DISPLAY_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, DISPLAY_ID,
+        FabricBlockEntityTypeBuilder.create(DisplayEntity::new, DISPLAY).build(null));
 
     // register for sever events
     EntityServerState.RegisterStateUpdates();
+
+    // register the config class
+    ServerConfig.Register("PROJECTOR_");
   }
 
   public static Identifier identifier(String id) {

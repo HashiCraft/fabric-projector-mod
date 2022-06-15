@@ -2,6 +2,7 @@ package com.github.hashicraft.projector.blocks;
 
 import com.github.hashicraft.projector.ProjectorMod;
 import com.github.hashicraft.projector.blocks.DisplayEntity.DisplayDimensions;
+import com.github.hashicraft.projector.config.ClientConfig;
 import com.github.hashicraft.projector.downloader.FileDownloader;
 import com.github.hashicraft.projector.downloader.FileDownloader.PictureData;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -44,6 +45,9 @@ public class DisplayEntityRenderer<T extends DisplayEntity> implements BlockEnti
     if (url == null || url.isEmpty()) {
       return;
     }
+
+    // parse the url and replace any ${{env.name}} placeholders
+    url = ClientConfig.ReplaceInString(url);
 
     // get the texture or fallback to placeholder
     Identifier texture = ProjectorMod.PLACEHOLDER_TEXTURE;

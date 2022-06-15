@@ -1,6 +1,7 @@
 package com.github.hashicraft.projector;
 
 import com.github.hashicraft.projector.blocks.DisplayEntityRenderer;
+import com.github.hashicraft.projector.config.ClientConfig;
 import com.github.hashicraft.projector.events.DisplayClicked;
 import com.github.hashicraft.projector.ui.DisplayGui;
 import com.github.hashicraft.projector.ui.DisplayScreen;
@@ -23,5 +24,7 @@ public class ProjectorModClient implements ClientModInitializer {
 
       return ActionResult.PASS;
     });
+
+    ClientConfig.Register();
   }
 }
