@@ -172,10 +172,18 @@ public class FileDownloader {
     // run in the background
     service.submit(() -> {
       // retry the download in case the file is not currently avaialble
-      RetryPolicy<Object> retryPolicy = new RetryPolicy<>().withBackoff(3, 60, ChronoUnit.SECONDS).withMaxAttempts(200)
-          .withMaxDuration(Duration.ofMinutes(10)).handle(RejectedExecutionException.class)
+      RetryPolicy<Object> retryPolicy = new RetryPolicy<>()
+          .withBackoff(3, 60, ChronoUnit.SECONDS)
+          .withMaxAttempts(3)
+          .withMaxDuration(Duration.ofMinutes(10))
+          .handle(RejectedExecutionException.class)
           .onRetry(e -> System.out.println("Unable to download, retrying: " + e.getLastFailure()))
-          .onRetriesExceeded(e -> System.out.println("Unable to download, aborting " + e.getFailure()));
+          .onRetriesExceeded(e -> {
+            System.out.println("Unable to download, aborting " + e.getFailure());
+
+            // delete from the cache
+            cache.remove(location);
+          });
 
       Failsafe.with(retryPolicy).run(() -> {
         try {
