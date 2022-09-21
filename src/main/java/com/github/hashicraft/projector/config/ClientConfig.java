@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.github.hashicraft.projector.ProjectorMod;
+
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 public class ClientConfig {
@@ -14,18 +16,18 @@ public class ClientConfig {
 
   public static void Register() {
     ClientPlayNetworking.registerGlobalReceiver(Messages.CONFIGUPDATE, (client, handler, buf, responseSender) -> {
-      System.out.println("Received config from the server");
+      ProjectorMod.LOGGER.info("Received config from the server");
 
       try {
         ByteArrayInputStream byteIn = new ByteArrayInputStream(buf.readByteArray());
         ObjectInputStream in = new ObjectInputStream(byteIn);
         projectorEnv = (HashMap<String, String>) in.readObject();
 
-        System.out.println(projectorEnv.toString());
+        ProjectorMod.LOGGER.info(projectorEnv.toString());
 
         // String out =
         // ClientConfig.ReplaceInString("${{env.PROCESSOR_LEVEL}}/${{env.NUMBER_OF_PROCESSORS}}");
-        // System.out.println("out " + out);
+        // ProjectorMod.LOGGER.info("out " + out);
       } catch (Exception e) {
         e.printStackTrace();
       }

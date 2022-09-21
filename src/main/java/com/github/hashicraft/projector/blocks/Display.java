@@ -3,25 +3,20 @@ package com.github.hashicraft.projector.blocks;
 import com.github.hashicraft.projector.ProjectorMod;
 import com.github.hashicraft.projector.events.DisplayClicked;
 import com.github.hashicraft.projector.items.Remote;
-import com.github.hashicraft.projector.ui.DisplayGui;
-import com.github.hashicraft.projector.ui.DisplayScreen;
 import com.github.hashicraft.stateful.blocks.StatefulBlock;
-
-import org.apache.commons.logging.Log;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -116,12 +111,11 @@ public class Display extends StatefulBlock {
 
         Remote remote = (Remote) player.getMainHandStack().getItem();
         remote.link(player.getMainHandStack(), pos);
-        player.sendMessage(new LiteralText("Linked the remote to " + pos.toShortString()), false);
+        player.sendMessage(Text.literal("Linked the remote to " + pos.toShortString()), false);
 
         return ActionResult.SUCCESS;
       }
 
-      System.out.print("normal click");
       return ActionResult.SUCCESS;
     }
 

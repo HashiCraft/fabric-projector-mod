@@ -1,5 +1,8 @@
 package com.github.hashicraft.projector;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.hashicraft.projector.blocks.Display;
 import com.github.hashicraft.projector.blocks.DisplayEntity;
 import com.github.hashicraft.projector.config.ServerConfig;
@@ -23,6 +26,7 @@ import net.minecraft.util.registry.Registry;
 
 public class ProjectorMod implements ModInitializer {
   public static final String MODID = "projector";
+  public static final Logger LOGGER = LoggerFactory.getLogger("projector");
 
   public static final Identifier REMOTE_ID = identifier("remote");
   public static Item REMOTE;

@@ -4,9 +4,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.github.hashicraft.projector.ProjectorMod;
 import com.github.hashicraft.stateful.blocks.StatefulBlockEntity;
 import com.github.hashicraft.stateful.blocks.Syncable;
@@ -20,7 +17,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public class DisplayEntity extends StatefulBlockEntity {
-  private static Logger logger = LogManager.getLogger(DisplayEntity.class);
   @Syncable
   public int currentPicture;
 
@@ -131,8 +127,8 @@ public class DisplayEntity extends StatefulBlockEntity {
       Instant currentTime = Instant.now();
       if (lastCheck != null) {
         Duration elapsed = Duration.between(lastCheck, currentTime);
-        // logger.info(currentPicture);
-        // logger.info(elapsed.toSeconds());
+        // ProjectorMod.LOGGER.info(currentPicture);
+        // ProjectorMod.LOGGER.info(elapsed.toSeconds());
         if (elapsed.toSeconds() > this.rotateSeconds) {
           currentPicture++;
           if (currentPicture >= pictures.size()) {

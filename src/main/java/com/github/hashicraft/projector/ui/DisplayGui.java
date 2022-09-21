@@ -2,6 +2,7 @@ package com.github.hashicraft.projector.ui;
 
 import java.util.ArrayList;
 
+import com.github.hashicraft.projector.ProjectorMod;
 import com.github.hashicraft.projector.blocks.DisplayEntity;
 import com.github.hashicraft.projector.events.DisplayGuiCallback;
 
@@ -15,18 +16,18 @@ import io.github.cottonmc.cotton.gui.widget.WToggleButton;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 public class DisplayGui extends LightweightGuiDescription {
   WPlainPanel root = new WPlainPanel();
   WScrollPanel scroll;
-  WLabel title = new WLabel(new LiteralText("§lConfigure Projector Images"));
+  WLabel title = new WLabel(Text.literal("§lConfigure Projector Images"));
 
-  WLabel rotateLabel = new WLabel(new LiteralText("Image rotation (seconds)"));
-  WTextField rotateDuration = new WTextField(new LiteralText("0"));
-  WLabel cacheLabel = new WLabel(new LiteralText("Cache duration (seconds)"));
-  WTextField cacheDuration = new WTextField(new LiteralText("0"));
-  WToggleButton autoRotate = new WToggleButton(new LiteralText("Auto rotate"));
+  WLabel rotateLabel = new WLabel(Text.literal("Image rotation (seconds)"));
+  WTextField rotateDuration = new WTextField(Text.literal("0"));
+  WLabel cacheLabel = new WLabel(Text.literal("Cache duration (seconds)"));
+  WTextField cacheDuration = new WTextField(Text.literal("0"));
+  WToggleButton autoRotate = new WToggleButton(Text.literal("Auto rotate"));
 
   ArrayList<WTextField> imageFields = new ArrayList<WTextField>();
 
@@ -63,10 +64,10 @@ public class DisplayGui extends LightweightGuiDescription {
 
     root.add(autoRotate, 0, 68, 20, 18);
 
-    WLabel label = new WLabel(new LiteralText("Images to load:"));
+    WLabel label = new WLabel(Text.literal("Images to load:"));
     root.add(label, 0, 90, 100, 18);
 
-    WButton plus = new WButton(new LiteralText("+"));
+    WButton plus = new WButton(Text.literal("+"));
     root.add(plus, 260, 84, 18, 18);
 
     plus.setOnClick(() -> {
@@ -81,7 +82,7 @@ public class DisplayGui extends LightweightGuiDescription {
     });
 
     if (imageCount > 1) {
-      WButton minus = new WButton(new LiteralText("-"));
+      WButton minus = new WButton(Text.literal("-"));
       root.add(minus, 236, 84, 18, 18);
 
       minus.setOnClick(() -> {
@@ -106,14 +107,14 @@ public class DisplayGui extends LightweightGuiDescription {
     // draw the images
     int currentRow = 0;
     for (int n = 0; n < imageCount; n++) {
-      WLabel l = new WLabel(new LiteralText(String.valueOf(n + 1) + "."));
+      WLabel l = new WLabel(Text.literal(String.valueOf(n + 1) + "."));
       panel.add(l, 0, currentRow * 24 + 6, 20, 18);
 
-      WTextField wtf = new WTextField(new LiteralText("http://image.com/image.jpg"));
+      WTextField wtf = new WTextField(Text.literal("http://image.com/image.jpg"));
       wtf.setMaxLength(25500);
       panel.add(wtf, 24, currentRow * 24, 200, 18);
 
-      WButton clear = new WButton(new LiteralText("x"));
+      WButton clear = new WButton(Text.literal("x"));
       panel.add(clear, 236, currentRow * 24, 18, 18);
 
       clear.setOnClick(() -> {
@@ -125,9 +126,9 @@ public class DisplayGui extends LightweightGuiDescription {
       currentRow++;
     }
 
-    WButton save = new WButton(new LiteralText("Save"));
+    WButton save = new WButton(Text.literal("Save"));
     save.setOnClick(() -> {
-      System.out.println("Button clicked!");
+      ProjectorMod.LOGGER.info("Button clicked!");
 
       setValues();
 
@@ -135,8 +136,9 @@ public class DisplayGui extends LightweightGuiDescription {
       callback.onSave();
 
       // close the dialog
-      MinecraftClient.getInstance().player.closeScreen();
-      MinecraftClient.getInstance().setScreen((Screen) null);
+      MinecraftClient client = MinecraftClient.getInstance();
+      client.player.closeScreen();
+      client.setScreen((Screen) null);
     });
     // root.add(save, 0, 200, 100, 18);
     root.add(save, 0, 220, 100, 18);
