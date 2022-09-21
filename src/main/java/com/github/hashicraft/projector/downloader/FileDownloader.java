@@ -27,6 +27,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
+import com.github.hashicraft.projector.ProjectorMod;
+
 import io.netty.handler.timeout.TimeoutException;
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
@@ -78,11 +80,11 @@ public class FileDownloader {
     synchronized (cacheMutex) {
       // only recycle when we have a decent size
       if (recycle.size() > 20) {
-        System.out.println("Reaping cache");
+        ProjectorMod.LOGGER.info("Reaping cache");
 
         TextureManager tm = MinecraftClient.getInstance().getTextureManager();
         for (Identifier i : recycle) {
-          System.out.println("destroy texture: " + i.toString());
+          ProjectorMod.LOGGER.info("destroy texture: " + i.toString());
           tm.destroyTexture(i);
         }
 
@@ -123,14 +125,14 @@ public class FileDownloader {
       // check the cache, if the cache seconds is greater than 0 and the image has
       // already been downloaded
       if (data != null && data.identifier != null && cacheSeconds > 0 && data.created != null) {
-        // System.out
-        // .println("Cache expired for url:" + url + " cacheSeconds: " + cacheSeconds +
+        // ProjectorMod.LOGGER.info("Cache expired for url:" + url + " cacheSeconds: " +
+        // cacheSeconds +
         // " created: " + data.created);
         Instant timeNow = Instant.now();
         long life = Duration.between(data.created, timeNow).toSeconds();
         if (life > cacheSeconds) {
-          System.out
-              .println("Cache expired for url:" + url + " cacheSeconds: " + cacheSeconds + " lifespan: " + life);
+          ProjectorMod.LOGGER
+              .info("Cache expired for url:" + url + " cacheSeconds: " + cacheSeconds + " lifespan: " + life);
 
           // add to the queue and redownload
           data.created = null;
@@ -151,7 +153,7 @@ public class FileDownloader {
 
   // downloads the file as a background process
   private void downloadFile(String location, int cacheSeconds) {
-    System.out.println("Starting download for:" + location);
+    ProjectorMod.LOGGER.info("Starting download for:" + location);
 
     // is already in process?
     PictureData cd = this.cache.get(location);
@@ -177,9 +179,9 @@ public class FileDownloader {
           .withMaxAttempts(3)
           .withMaxDuration(Duration.ofMinutes(10))
           .handle(RejectedExecutionException.class)
-          .onRetry(e -> System.out.println("Unable to download, retrying: " + e.getLastFailure()))
+          .onRetry(e -> ProjectorMod.LOGGER.info("Unable to download, retrying: " + e.getLastFailure()))
           .onRetriesExceeded(e -> {
-            System.out.println("Unable to download, aborting " + e.getFailure());
+            ProjectorMod.LOGGER.info("Unable to download, aborting " + e.getFailure());
 
             // delete from the cache
             cache.remove(location);
@@ -237,7 +239,7 @@ public class FileDownloader {
           } else {
             file = new File(location);
             if (!file.exists()) {
-              System.out.println("Unable to load file: " + location);
+              ProjectorMod.LOGGER.info("Unable to load file: " + location);
               throw new FileNotFoundException("File not found: " + location);
             }
           }
@@ -258,7 +260,6 @@ public class FileDownloader {
           Identifier id = tm.registerDynamicTexture("image/pictures",
               nativeTexture);
 
-          Identifier oldIdentifier = null;
           // update the cache
           synchronized (mutex) {
             PictureData data = this.cache.get(location);
@@ -276,7 +277,7 @@ public class FileDownloader {
             data.created = Instant.now();
           }
 
-          System.out.println("Downloaded url: " + location);
+          ProjectorMod.LOGGER.info("Downloaded url: " + location);
         } catch (Exception ex) {
           throw new RejectedExecutionException("Unable to download file " + ex);
         }
