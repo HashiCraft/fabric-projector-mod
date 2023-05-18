@@ -54,11 +54,11 @@ click on the `Display` to change images. After all the `Remotes` use Infra-Redst
 
 You can set environment variables on your server that enable you to automatically set a base url for an image.
 For example, if the server has the environment variable `PROJECTOR_base` set to the value `https://mydomain.com`.
-Then in the image url you can use the template variable `{base}` and it will automatically be replaced with the 
+Then in the image url you can use the template variable `{env.base}` and it will automatically be replaced with the 
 value of the environment variable.
 
 ```shell
-{base}/myimage.jpg
+{env.base}/myimage.jpg
 ```
 
 Only environment variables starting with `PROJECTOR_` are read from the server, no other server
