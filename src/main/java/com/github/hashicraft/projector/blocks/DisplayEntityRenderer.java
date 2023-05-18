@@ -1,5 +1,8 @@
 package com.github.hashicraft.projector.blocks;
 
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+
 import com.github.hashicraft.projector.ProjectorMod;
 import com.github.hashicraft.projector.blocks.DisplayEntity.DisplayDimensions;
 import com.github.hashicraft.projector.config.ClientConfig;
@@ -19,9 +22,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Quaternion;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 
 public class DisplayEntityRenderer<T extends DisplayEntity> implements BlockEntityRenderer<T> {
   public DisplayEntityRenderer(BlockEntityRendererFactory.Context ctx) {
@@ -62,7 +63,7 @@ public class DisplayEntityRenderer<T extends DisplayEntity> implements BlockEnti
     }
 
     RenderSystem.enableDepthTest();
-    RenderSystem.setShader(GameRenderer::getPositionTexShader);
+    RenderSystem.setShader(GameRenderer::getPositionTexProgram);
     RenderSystem.setShaderTexture(0, texture);
 
     RenderSystem.enableDepthTest();
@@ -86,14 +87,14 @@ public class DisplayEntityRenderer<T extends DisplayEntity> implements BlockEnti
     float displayWidth = dimensions.width - 0.25F;
     float displayHeight = dimensions.height - 0.25F;
 
-    Quaternion yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(0.0F);
+    Quaternionf yRotation = RotationAxis.POSITIVE_Y.rotationDegrees(0.0F);
 
     switch (direction) {
       case NORTH:
         zTranslate = 0.49F;
         zOffset = 1.0F;
         xOffset = 1.0F;
-        yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0F);
+        yRotation = RotationAxis.POSITIVE_Y.rotationDegrees(180.0F);
         break;
       case SOUTH:
         zTranslate = -0.49F;
@@ -101,10 +102,10 @@ public class DisplayEntityRenderer<T extends DisplayEntity> implements BlockEnti
       case EAST:
         xTranslate = -0.49F;
         zOffset = 1.0F;
-        yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(90.0F);
+        yRotation = RotationAxis.POSITIVE_Y.rotationDegrees(90.0F);
         break;
       case WEST:
-        yRotation = Vec3f.POSITIVE_Y.getDegreesQuaternion(-90.0F);
+        yRotation = RotationAxis.POSITIVE_Y.rotationDegrees(-90.0F);
         xTranslate = 0.49F;
         xOffset = 1.0F;
         break;

@@ -15,7 +15,8 @@ public class ProjectorModClient implements ClientModInitializer {
   @Override
   public void onInitializeClient() {
 
-    BlockEntityRendererRegistry.register(ProjectorMod.DISPLAY_ENTITY, DisplayEntityRenderer::new);
+    BlockEntityRendererRegistry.register(ProjectorMod.DISPLAY_ENTITY,
+        DisplayEntityRenderer::new);
 
     DisplayClicked.EVENT.register((block, callback) -> {
       DisplayGui gui = new DisplayGui(block, callback);

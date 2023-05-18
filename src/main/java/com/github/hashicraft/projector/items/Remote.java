@@ -83,7 +83,7 @@ public class Remote extends NetworkSyncedItem {
   public TypedActionResult<ItemStack> use(World world, PlayerEntity playerEntity, Hand hand) {
     ItemStack itemStack = playerEntity.getStackInHand(hand);
     click(itemStack, world);
-    playerEntity.playSound(SoundEvents.UI_BUTTON_CLICK, 0.2F, 1.0F);
+    playerEntity.playSound(SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON, 0.2F, 1.0F);
     return TypedActionResult.success(itemStack);
   }
 }

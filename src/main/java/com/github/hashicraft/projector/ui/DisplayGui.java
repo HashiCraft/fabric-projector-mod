@@ -101,7 +101,8 @@ public class DisplayGui extends LightweightGuiDescription {
     WPlainPanel panel = new WPlainPanel();
 
     scroll = new WScrollPanel(panel);
-    scroll.setHost(root.getHost());
+    // scroll.setHost(root.getHost());
+
     root.add(scroll, 0, 110, 300, 100);
 
     // draw the images
