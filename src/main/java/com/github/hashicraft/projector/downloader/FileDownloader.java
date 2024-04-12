@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
@@ -199,6 +200,7 @@ public class FileDownloader {
           // Are we dealing with a local file or URL?
           try {
             final URL url = new URL(location);
+
             if (url.getProtocol().equals("http") || url.getProtocol().equals("https")) {
               isURL = true;
             }
@@ -208,7 +210,13 @@ public class FileDownloader {
             // downloads to 10 concurrent threads
             Future<?> future = downloadService.submit(() -> {
               try {
-                BufferedInputStream in = new BufferedInputStream(url.openStream());
+
+                final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestProperty("user-agent",
+                    " curl/7.81.0");
+                conn.setRequestProperty("accept", "*/*");
+
+                BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
                 BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(tmpFile));
 
                 byte dataBuffer[] = new byte[1024];
